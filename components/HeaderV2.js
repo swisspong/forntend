@@ -4,12 +4,16 @@ import {
   ShoppingBagIcon,
   UserIcon,
 } from "@heroicons/react/outline";
-import { useState } from "react";
+import Link from "next/link";
+
+import { useEffect, useState } from "react";
+
 import LoginPopup from "./auth/LoginPop";
 import Cart from "./cart/Cart";
+import CartHeader from "./CartHeader";
 // import { useState } from "react";
 
-const HeaderV2 = () => {
+const HeaderV2 = ({ cart }) => {
   const [openPopup, setOpenPopup] = useState(false);
   const openPopupHanelder = () => {
     setOpenPopup(true);
@@ -17,6 +21,7 @@ const HeaderV2 = () => {
   const closePopupHandler = () => {
     setOpenPopup(false);
   };
+
   return (
     <>
       {openPopup && <LoginPopup closePopupHandler={closePopupHandler} />}
@@ -37,18 +42,18 @@ const HeaderV2 = () => {
             <SearchIcon className="h-6 cursor-pointer transition duration-100 transform hover:scale-125 hover:text-gray-900" />
           </div>
           <div className="flex space-x-6">
-            <a
-              to="/cart"
-              className="relative h-6 w-6 block cursor-pointer transition-all duration-100 transform hover:scale-125 hover:text-gray-900"
-            >
-              <ShoppingBagIcon />
-              <span
-                className="absolute left-3 bottom-3 inline-flex items-center justify-center px-2 py-1 
+            {/* <CartHeader /> */}
+            <Link href={"/cart"}>
+              <a className="relative h-6 w-6 block cursor-pointer transition-all duration-100 transform hover:scale-125 hover:text-gray-900">
+                <ShoppingBagIcon />
+                <span
+                  className="absolute left-3 bottom-3 inline-flex items-center justify-center px-2 py-1 
               mr-2 text-xs font-bold leading-none text-black  bg-white rounded-full border border-gray-700"
-              >
-                9
-              </span>
-            </a>
+                >
+                  {cart?.cartItemList?.length}
+                </span>
+              </a>
+            </Link>
 
             <UserIcon
               className="h-6 w-6 cursor-pointer transition duration-100 transform hover:scale-125 hover:text-gray-900"

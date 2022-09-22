@@ -8,6 +8,7 @@ import "swiper/css/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation, Pagination } from "swiper";
 // Styles must use direct files imports
+import Cookies from "js-cookie";
 import "../node_modules/swiper/swiper-bundle.css";
 import HeroSection from "../components/HeroSection";
 import ProductList from "../components/ProductList";
@@ -18,6 +19,13 @@ import ProductListV2 from "../components/ProductListV2";
 import MyFooter from "../components/MyFooter";
 import ProductListLocalData from "../components/ProductListLocalData";
 import { useEffect } from "react";
+
+
+import axios from "axios";
+import { useCart } from "../hooks/useCart";
+
+
+
 
 const products = [
   {
@@ -132,20 +140,11 @@ const categories = [
       "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=783&q=80",
   },
 ];
-export const getStaticProps = async () => {
-  const res = await fetch(
-    "http://localhost:5000/api/v1/product?page=1&per_page=10"
-  );
-  const response = await res.json();
 
-  return {
-    props: { productList: response.data },
-    revalidate: 10,
-  };
-};
+
 export default function Home({ productList }) {
-  // console.log(productList)
-  useEffect(() => {}, []);
+  
+  const { isFetching, ...queryInfo } = useCart()
   return (
     <div>
       <Head>
@@ -162,3 +161,14 @@ export default function Home({ productList }) {
     </div>
   );
 }
+export const getStaticProps = async () => {
+  const res = await fetch(
+    "http://localhost:5000/api/v1/product?page=1&per_page=10"
+  );
+  const response = await res.json();
+
+  return {
+    props: { productList: response.data },
+    revalidate: 10,
+  };
+};
