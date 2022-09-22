@@ -23,7 +23,9 @@ export function useCart() {
       staleTime: 60000,
     });
   } else {
-    return useQuery(["cart"], () => fetchCart());
+    return useQuery(["cart"], () => fetchCart(), {
+      staleTime: 60000,
+    });
   }
 }
 
