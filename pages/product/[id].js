@@ -9,20 +9,23 @@ import RadioGroupNoImage from "../../components/RadioGroupNoImage";
 import "swiper/css/thumbs";
 import "swiper/css/navigation";
 import "../../node_modules/swiper/swiper-bundle.css";
-import { Formik } from "formik";
-import { useAddToCart, useAddToCartMutation, useCart } from "../../hooks/useCart";
+import { Form, Formik } from "formik";
+import {
+  useAddToCart,
+  useAddToCartMutation,
+  useCart,
+} from "../../hooks/useCart";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-
+import FormikControl from "../../components/Form/FormikController";
 
 const productDetail2 = ({ product }) => {
   const router = useRouter();
   const { id } = router.query;
-  const { isFetching, ...queryInfo } = useCart()
+  const { isFetching, ...queryInfo } = useCart();
 
-  const {mutate} = useAddToCartMutation()
+  const { mutate } = useAddToCartMutation();
 
   return (
     <>
@@ -159,179 +162,66 @@ const productDetail2 = ({ product }) => {
                 </div>
               </details>
               <Formik
-                initialValues={{ quantity: 4 }}
+                initialValues={{
+                  quantity: 1,
+                  // ...(product.optionGroupList.length > 0 &&
+                  //   product.optionGroupList.reduce(
+                  //     (acc, cur) => ({ ...acc, [cur.name]: "" }),
+                  //     {}
+                  //   )),
+                  options: product.optionGroupList.map((_) => ""),
+                }}
+                enableReinitialize
                 onSubmit={(values) => {
                   console.log("formik values", values, id);
-                  mutate({ id: Number(id), ...values });
+                  //mutate({ id: Number(id), ...values });
                 }}
               >
                 {(formik) => {
                   return (
-                    <form className="mt-8" onSubmit={formik.handleSubmit}>
-                      {/* {product.optionGroupList.length > 0 &&
-                  product.optionGroupList.map((optionGroup, index) => (
-                    <fieldset className={index !== 0 && "mt-4"}>
-                      <legend className="mb-1 text-sm font-medium">
-                        {optionGroup.name}
-                      </legend>
-
-                      <div className="flow-root">
-                        <div className="flex flex-wrap -m-0.5">
-                          {optionGroup.options.map((option) => (
-                            <label
-                              for={`${optionGroup.name}-${option.name}`}
-                              className="cursor-pointer p-0.5"
-                            >
-                              <input
-                                type="radio"
-                                name={optionGroup.name}
-                                id={`${optionGroup.name}-${option.name}`}
-                                className="sr-only peer"
-                              />
-
-                              <span className="inline-block px-3 py-1 text-xs font-medium border rounded-full group peer-checked:border-blue-600 peer-checked:text-blue-600">
-                                {option.name}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    </fieldset>
-                  ))} */}
-                      {/* <pre>
-                  {JSON.stringify(product,null,2)}
-                </pre> */}
+                    <Form className="mt-8" onSubmit={formik.handleSubmit}>
                       {product.optionGroupList.length > 0 &&
-                        product.optionGroupList.map((optionGroup, index) => (
-                          <fieldset className={index !== 0 && "mt-4"}>
-                            <Disclosure defaultOpen>
-                              {({ open }) => (
-                                <>
-                                  <Disclosure.Button className="flex justify-between w-full py-2 bg-gray-100">
-                                    <legend className="text-sm font-medium">
-                                      {optionGroup.name}
-                                    </legend>
-                                    <ChevronUpIcon
-                                      className={`${
-                                        open ? "transform rotate-180" : ""
-                                      } w-5 h-5 text-gray-500`}
-                                    />
-                                  </Disclosure.Button>
-                                  <Disclosure.Panel className="px-1 pt-4 pb-2">
-                                    {optionGroup.showImage ? (
-                                      <RadioGroupImage
-                                        options={optionGroup.options}
+                        product.optionGroupList
+                          .filter(
+                            (optionGroupFilter) => optionGroupFilter.allowStatus
+                          )
+                          .map((optionGroup, index) => (
+                            <fieldset className={index !== 0 && "mt-4"}>
+                              {/* <Disclosure defaultOpen>
+                                {({ open }) => (
+                                  <>
+                                    <Disclosure.Button className="flex justify-between w-full py-2 bg-gray-100">
+                                      <legend className="text-sm font-medium">
+                                        {optionGroup.name}
+                                      </legend>
+                                      <ChevronUpIcon
+                                        className={`${
+                                          open ? "transform rotate-180" : ""
+                                        } w-5 h-5 text-gray-500`}
                                       />
-                                    ) : (
-                                      <RadioGroupNoImage
-                                        name={optionGroup.name}
-                                        options={optionGroup.options}
-                                      />
-                                    )}
-                                  </Disclosure.Panel>
-                                </>
-                              )}
-                            </Disclosure>
-                            {/* <legend className="mb-1 text-sm font-medium">
-                        {optionGroup.name}
-                      </legend>
-
-                      <div className="flow-root">
-                        <div className="flex flex-wrap -m-0.5">
-                          {optionGroup.options.map((option) => (
-                            <label
-                              for={`${optionGroup.name}-${option.name}`}
-                              className="cursor-pointer p-0.5"
-                            >
-                              <input
-                                type="radio"
-                                name={optionGroup.name}
-                                id={`${optionGroup.name}-${option.name}`}
-                                className="sr-only peer"
+                                    </Disclosure.Button>
+                                    <Disclosure.Panel className="px-1 pt-4 pb-2">
+                                      {optionGroup.showImage ? (
+                                        <RadioGroupImage
+                                          options={optionGroup.options}
+                                        />
+                                      ) : (
+                                        <RadioGroupNoImage
+                                          name={optionGroup.name}
+                                          options={optionGroup.options}
+                                        />
+                                      )}
+                                    </Disclosure.Panel>
+                                  </>
+                                )}
+                              </Disclosure> */}
+                              <FormikControl
+                                control={"radioGroupOption"}
+                                name={`options.${index}`}
+                                optionGroup={optionGroup}
                               />
-
-                              <span className="inline-block px-3 py-1 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                                {option.name}
-                              </span>
-                            </label>
+                            </fieldset>
                           ))}
-                        </div>
-                      </div> */}
-                          </fieldset>
-                        ))}
-
-                      {/* <fieldset className="mt-4">
-                  <legend className="mb-1 text-sm font-medium">Size</legend>
-
-                  <div className="flow-root">
-                    <div className="flex flex-wrap -m-0.5">
-                      <label for="size_xs" className="cursor-pointer p-0.5">
-                        <input
-                          type="radio"
-                          name="size"
-                          id="size_xs"
-                          className="sr-only peer"
-                        />
-
-                        <span className="inline-flex items-center justify-center w-8 h-8 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                          XS
-                        </span>
-                      </label>
-
-                      <label for="size_s" className="cursor-pointer p-0.5">
-                        <input
-                          type="radio"
-                          name="size"
-                          id="size_s"
-                          className="sr-only peer"
-                        />
-
-                        <span className="inline-flex items-center justify-center w-8 h-8 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                          S
-                        </span>
-                      </label>
-
-                      <label for="size_m" className="cursor-pointer p-0.5">
-                        <input
-                          type="radio"
-                          name="size"
-                          id="size_m"
-                          className="sr-only peer"
-                        />
-
-                        <span className="inline-flex items-center justify-center w-8 h-8 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                          M
-                        </span>
-                      </label>
-
-                      <label for="size_l" className="cursor-pointer p-0.5">
-                        <input
-                          type="radio"
-                          name="size"
-                          id="size_l"
-                          className="sr-only peer"
-                        />
-
-                        <span className="inline-flex items-center justify-center w-8 h-8 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                          L
-                        </span>
-                      </label>
-
-                      <label for="size_xl" className="cursor-pointer p-0.5">
-                        <input
-                          type="radio"
-                          name="size"
-                          id="size_xl"
-                          className="sr-only peer"
-                        />
-
-                        <span className="inline-flex items-center justify-center w-8 h-8 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                          XL
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                </fieldset> */}
 
                       <div className="flex mt-8">
                         <div>
@@ -358,44 +248,11 @@ const productDetail2 = ({ product }) => {
                           Add to Cart
                         </button>
                       </div>
-                    </form>
+                    </Form>
                   );
                 }}
               </Formik>
-              <form className="mt-8">
-                {/* {product.optionGroupList.length > 0 &&
-                  product.optionGroupList.map((optionGroup, index) => (
-                    <fieldset className={index !== 0 && "mt-4"}>
-                      <legend className="mb-1 text-sm font-medium">
-                        {optionGroup.name}
-                      </legend>
-
-                      <div className="flow-root">
-                        <div className="flex flex-wrap -m-0.5">
-                          {optionGroup.options.map((option) => (
-                            <label
-                              for={`${optionGroup.name}-${option.name}`}
-                              className="cursor-pointer p-0.5"
-                            >
-                              <input
-                                type="radio"
-                                name={optionGroup.name}
-                                id={`${optionGroup.name}-${option.name}`}
-                                className="sr-only peer"
-                              />
-
-                              <span className="inline-block px-3 py-1 text-xs font-medium border rounded-full group peer-checked:border-blue-600 peer-checked:text-blue-600">
-                                {option.name}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    </fieldset>
-                  ))} */}
-                {/* <pre>
-                  {JSON.stringify(product,null,2)}
-                </pre> */}
+              {/* <form className="mt-8">
                 {product.optionGroupList.length > 0 &&
                   product.optionGroupList.map((optionGroup, index) => (
                     <fieldset className={index !== 0 && "mt-4"}>
@@ -427,106 +284,8 @@ const productDetail2 = ({ product }) => {
                           </>
                         )}
                       </Disclosure>
-                      {/* <legend className="mb-1 text-sm font-medium">
-                        {optionGroup.name}
-                      </legend>
-
-                      <div className="flow-root">
-                        <div className="flex flex-wrap -m-0.5">
-                          {optionGroup.options.map((option) => (
-                            <label
-                              for={`${optionGroup.name}-${option.name}`}
-                              className="cursor-pointer p-0.5"
-                            >
-                              <input
-                                type="radio"
-                                name={optionGroup.name}
-                                id={`${optionGroup.name}-${option.name}`}
-                                className="sr-only peer"
-                              />
-
-                              <span className="inline-block px-3 py-1 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                                {option.name}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </div> */}
                     </fieldset>
                   ))}
-
-                {/* <fieldset className="mt-4">
-                  <legend className="mb-1 text-sm font-medium">Size</legend>
-
-                  <div className="flow-root">
-                    <div className="flex flex-wrap -m-0.5">
-                      <label for="size_xs" className="cursor-pointer p-0.5">
-                        <input
-                          type="radio"
-                          name="size"
-                          id="size_xs"
-                          className="sr-only peer"
-                        />
-
-                        <span className="inline-flex items-center justify-center w-8 h-8 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                          XS
-                        </span>
-                      </label>
-
-                      <label for="size_s" className="cursor-pointer p-0.5">
-                        <input
-                          type="radio"
-                          name="size"
-                          id="size_s"
-                          className="sr-only peer"
-                        />
-
-                        <span className="inline-flex items-center justify-center w-8 h-8 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                          S
-                        </span>
-                      </label>
-
-                      <label for="size_m" className="cursor-pointer p-0.5">
-                        <input
-                          type="radio"
-                          name="size"
-                          id="size_m"
-                          className="sr-only peer"
-                        />
-
-                        <span className="inline-flex items-center justify-center w-8 h-8 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                          M
-                        </span>
-                      </label>
-
-                      <label for="size_l" className="cursor-pointer p-0.5">
-                        <input
-                          type="radio"
-                          name="size"
-                          id="size_l"
-                          className="sr-only peer"
-                        />
-
-                        <span className="inline-flex items-center justify-center w-8 h-8 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                          L
-                        </span>
-                      </label>
-
-                      <label for="size_xl" className="cursor-pointer p-0.5">
-                        <input
-                          type="radio"
-                          name="size"
-                          id="size_xl"
-                          className="sr-only peer"
-                        />
-
-                        <span className="inline-flex items-center justify-center w-8 h-8 text-xs font-medium border rounded-full group peer-checked:bg-black peer-checked:text-white">
-                          XL
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                </fieldset> */}
 
                 <div className="flex mt-8">
                   <div>
@@ -550,7 +309,7 @@ const productDetail2 = ({ product }) => {
                     Add to Cart
                   </button>
                 </div>
-              </form>
+              </form> */}
             </div>
           </div>
         </div>

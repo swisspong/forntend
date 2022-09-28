@@ -50,7 +50,7 @@ const HeaderV2 = ({ cart }) => {
                   className="absolute left-3 bottom-3 inline-flex items-center justify-center px-2 py-1 
               mr-2 text-xs font-bold leading-none text-black  bg-white rounded-full border border-gray-700"
                 >
-                  {cart?.cartItemList?.length}
+                  {cart?.totalQuantity}
                 </span>
               </a>
             </Link>

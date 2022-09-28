@@ -208,9 +208,11 @@ const CartPage = () => {
               </div>
             </div>
             <div className="flex flex-row justify-end">
-              <a className="w-full lg:w-72 justify-center inline-flex py-2 px-4 bg-gray-200">
+              <Link href={"/checkout"}>
+              <a className="w-full lg:w-72 justify-center inline-flex py-2 px-4 bg-gray-200 cursor-pointer">
                 Proceed to Checkout
               </a>
+              </Link>
             </div>
           </div>
         </div>
