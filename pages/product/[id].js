@@ -169,12 +169,14 @@ const productDetail2 = ({ product }) => {
                   //     (acc, cur) => ({ ...acc, [cur.name]: "" }),
                   //     {}
                   //   )),
-                  options: product.optionGroupList.map((_) => ""),
+                  options: product.optionGroupList
+                    .filter((item) => item.allowStatus)
+                    .map((item) => ({ [item.id]: "" })),
                 }}
                 enableReinitialize
                 onSubmit={(values) => {
                   console.log("formik values", values, id);
-                  //mutate({ id: Number(id), ...values });
+                  mutate({ id: Number(id), ...values });
                 }}
               >
                 {(formik) => {
@@ -217,7 +219,7 @@ const productDetail2 = ({ product }) => {
                               </Disclosure> */}
                               <FormikControl
                                 control={"radioGroupOption"}
-                                name={`options.${index}`}
+                                name={`options.${index}.${optionGroup.id}`}
                                 optionGroup={optionGroup}
                               />
                             </fieldset>

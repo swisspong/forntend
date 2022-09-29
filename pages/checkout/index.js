@@ -8,6 +8,8 @@ import CreditCard from "../../components/omise-payment/CreditCard";
 import { useCart } from "../../hooks/useCart";
 import Script from "react-load-script";
 import { useAddOrderMutation } from "../../hooks/usePayment";
+import { Disclosure } from "@headlessui/react";
+import { ChevronUpIcon } from "@heroicons/react/solid";
 const CheckoutPage = () => {
   const { isLoading, data } = useCart();
   const { mutate } = useAddOrderMutation();
@@ -131,41 +133,54 @@ const CheckoutPage = () => {
                                 {cartItem.product.name}
                               </a>
                             </Link>
-                            <div className="flex  flex-wrap max-w-[30ch] items-center pb-1">
-                              <div className="text-sm font-semibold text-accent-7 inline-flex items-center justify-center">
-                                Color
-                                <span className="mx-2 rounded-full bg-transparent border h-5 p-1 text-accent-9 inline-flex items-center justify-center overflow-hidden">
-                                  red
-                                </span>
-                              </div>
-                              <div className="text-sm font-semibold text-accent-7 inline-flex items-center justify-center">
-                                Color
-                                <span className="mx-2 rounded-full bg-transparent border h-5 p-1 text-accent-9 inline-flex items-center justify-center overflow-hidden">
-                                  red
-                                </span>
-                              </div>
-                              <div className="text-sm font-semibold text-accent-7 inline-flex items-center justify-center">
-                                Color
-                                <span className="mx-2 rounded-full bg-transparent border h-5 p-1 text-accent-9 inline-flex items-center justify-center overflow-hidden">
-                                  red
-                                </span>
-                              </div>
-                              <div className="text-sm font-semibold text-accent-7 inline-flex items-center justify-center">
-                                Color
-                                <span className="mx-2 rounded-full bg-transparent border h-5 p-1 text-accent-9 inline-flex items-center justify-center overflow-hidden">
-                                  red
-                                </span>
-                              </div>
-                              <div className="text-sm font-semibold text-accent-7 inline-flex items-center justify-center">
-                                Color
-                                <span className="mx-2 rounded-full bg-transparent border h-5 p-1 text-accent-9 inline-flex items-center justify-center overflow-hidden">
-                                  red
-                                </span>
-                              </div>
-                            </div>
+                            <Disclosure defaultOpen>
+                              {({ open }) => (
+                                <>
+                                  <div>
+                                    <Disclosure.Button className="flex justify-start items-center">
+                                      <legend className="text-xs ">
+                                        Detail
+                                      </legend>
+                                      <ChevronUpIcon
+                                        className={`${
+                                          open ? "transform rotate-180" : ""
+                                        } w-5 h-5 text-gray-500 `}
+                                      />
+                                    </Disclosure.Button>
+                                  </div>
+                                  <Disclosure.Panel>
+                                    <dl className="ml-1 mt-1 space-y-1 text-xs text-gray-500">
+                                      {cartItem.cartItemDetail.map(
+                                        (cartItemDetail) => (
+                                          <div>
+                                            <dt className="inline">
+                                              {cartItemDetail.optionGroup.name}:
+                                            </dt>
+                                            <dd className="inline">
+                                              {cartItemDetail.option.name}
+                                            </dd>
+                                          </div>
+                                        )
+                                      )}
+
+                                      {/* <div>
+              <dt className="inline">Size:</dt>
+              <dd className="inline">UK 10</dd>
+            </div> */}
+                                    </dl>
+                                  </Disclosure.Panel>
+                                </>
+                              )}
+                            </Disclosure>
                           </div>
-                          <div className="hidden md:flex flex-col justify-between space-y-2 text-sm">
+                          <div className="hidden md:block text-sm">
+                            
                             ${Number(cartItem.price).toFixed(2)}
+                            <small class="text-gray-500">
+                              {" "}
+                              x{cartItem.quantity}
+                            </small>
+                            <br />= ${Number(cartItem.subTotal).toFixed(2)}
                           </div>
                         </div>
                       ))}
