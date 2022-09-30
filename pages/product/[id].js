@@ -17,50 +17,69 @@ import {
 } from "../../hooks/useCart";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Yup from "yup";
+import {
+  dehydrate,
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import FormikControl from "../../components/Form/FormikController";
-
-const productDetail2 = ({ product }) => {
+import { MinusIcon, PlusIcon } from "@heroicons/react/outline";
+import { useState } from "react";
+const fetchProduct = async (id) => {
+  const res = await fetch(`http://localhost:5000/api/v1/product/${id}`);
+  return res.json();
+};
+const productDetail2 = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { isFetching, ...queryInfo } = useCart();
-
+  const {
+    isLoading,
+    isError,
+    error,
+    data: product,
+  } = useQuery(["products", id], () => fetchProduct(id));
+  const validationSchema = Yup.object({
+    // quantity: Yup.string().required().min(3),
+  });
   const { mutate } = useAddToCartMutation();
+  const { isFetching, ...queryInfo } = useCart();
+  const [initError, setInitError] = useState(true);
 
+  const findMinQuantity = (formik, product) => {
+    let inventoryQ = formik.values.options.map((option) => {
+      const optionGroup = product.optionGroupList.find(
+        (optionGroup) => optionGroup.id === Number(Object.keys(option)[0])
+      );
+      const optionFound = optionGroup.options.find(
+        (optionTmp) => optionTmp.id === Number(Object.values(option)[0])
+      );
+      return optionFound.optionInventoryList[0].inventory.quantity;
+    });
+
+    inventoryQ.push(product.availableStock);
+    return inventoryQ.reduce((acc, cur) => {
+      return acc < cur ? acc : cur;
+    });
+  };
+  if (isLoading) {
+    return (
+      <div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
   return (
     <>
       <section>
         <div className="relative max-w-screen-xl px-4 py-8 mx-auto">
           <div className="grid items-start grid-cols-1 gap-8  md:grid-cols-2">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-1">
-              {/* <div className="aspect-w-1 aspect-h-1">
-                <img
-                  alt="Mobile Phone Stand"
-                  className="object-cover rounded-xl"
-                  // src="https://images.unsplash.com/photo-1627844541143-a561a1a9b72a"
-                  src={product.productImage[0].image.path}
-                />
-              </div> */}
-
               <ProductImageSlider
                 images={product.productImage.map((item) => item.image.path)}
               />
-              {/* <div className="aspect-w-1 aspect-h-1"> */}
-
-              {/* </div> */}
-
-              {/* <div className="grid grid-cols-2 gap-4 lg:mt-4">
-                {product.productImage.map((item) => (
-                  <div className="aspect-w-1 aspect-h-1">
-                    <img
-                      alt="Mobile Phone Stand"
-                      className="object-cover rounded-xl"
-                      src={item.image.path}
-                    />
-                  </div>
-                ))}
-              </div> */}
-              {/* <pre>{JSON.stringify(product, null, 2)}</pre> */}
             </div>
 
             <div className="sticky top-0">
@@ -164,22 +183,20 @@ const productDetail2 = ({ product }) => {
               <Formik
                 initialValues={{
                   quantity: 1,
-                  // ...(product.optionGroupList.length > 0 &&
-                  //   product.optionGroupList.reduce(
-                  //     (acc, cur) => ({ ...acc, [cur.name]: "" }),
-                  //     {}
-                  //   )),
+
                   options: product.optionGroupList
                     .filter((item) => item.allowStatus)
                     .map((item) => ({ [item.id]: "" })),
                 }}
                 enableReinitialize
+                validationSchema={validationSchema}
                 onSubmit={(values) => {
                   console.log("formik values", values, id);
                   mutate({ id: Number(id), ...values });
                 }}
               >
                 {(formik) => {
+                  console.log(formik.values);
                   return (
                     <Form className="mt-8" onSubmit={formik.handleSubmit}>
                       {product.optionGroupList.length > 0 &&
@@ -189,34 +206,6 @@ const productDetail2 = ({ product }) => {
                           )
                           .map((optionGroup, index) => (
                             <fieldset className={index !== 0 && "mt-4"}>
-                              {/* <Disclosure defaultOpen>
-                                {({ open }) => (
-                                  <>
-                                    <Disclosure.Button className="flex justify-between w-full py-2 bg-gray-100">
-                                      <legend className="text-sm font-medium">
-                                        {optionGroup.name}
-                                      </legend>
-                                      <ChevronUpIcon
-                                        className={`${
-                                          open ? "transform rotate-180" : ""
-                                        } w-5 h-5 text-gray-500`}
-                                      />
-                                    </Disclosure.Button>
-                                    <Disclosure.Panel className="px-1 pt-4 pb-2">
-                                      {optionGroup.showImage ? (
-                                        <RadioGroupImage
-                                          options={optionGroup.options}
-                                        />
-                                      ) : (
-                                        <RadioGroupNoImage
-                                          name={optionGroup.name}
-                                          options={optionGroup.options}
-                                        />
-                                      )}
-                                    </Disclosure.Panel>
-                                  </>
-                                )}
-                              </Disclosure> */}
                               <FormikControl
                                 control={"radioGroupOption"}
                                 name={`options.${index}.${optionGroup.id}`}
@@ -225,7 +214,7 @@ const productDetail2 = ({ product }) => {
                             </fieldset>
                           ))}
 
-                      <div className="flex mt-8">
+                      {/* <div className="flex mt-8">
                         <div>
                           <label for="quantity" className="sr-only">
                             Qty
@@ -249,69 +238,87 @@ const productDetail2 = ({ product }) => {
                         >
                           Add to Cart
                         </button>
+                      </div> */}
+                      <div className="flex justify-start mt-8">
+                        <input
+                          className=" w-20"
+                          type="number"
+                          disabled
+                          value={formik.values.quantity}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (
+                              formik.values.options.every(
+                                (option) => Object.values(option)[0] !== ""
+                              ) &&
+                              formik.values.quantity < product.availableStock
+                            ) {
+                              console.log(true);
+                              formik.setFieldValue(
+                                "qunatity",
+                                (formik.values.quantity += 1)
+                              );
+                            }
+                          }}
+                          className="flex border-accent-2 items-center border p-1"
+                        >
+                          <PlusIcon className="h-6 w-6" />
+                        </button>
+                        <button
+                          type="button"
+                          className="flex items-center border-accent-2 border p-1"
+                          // onClick={() => {
+                          //   setQuantity((prevState) => {
+                          //     if (prevState > 1) {
+                          //       updateCartItem({
+                          //         id: cartItem.productId,
+                          //         quantity: prevState - 1,
+                          //       });
+                          //       return prevState - 1;
+                          //     } else {
+                          //       return prevState;
+                          //     }
+                          //   });
+                          // }}
+                        >
+                          <MinusIcon className="h-6 w-6" />
+                        </button>
+                        <button
+                          // disabled={formik.va}
+                          type="submit"
+                          className={`block px-5 py-3 ml-3 text-xs font-medium text-white 
+                          
+                              bg-green-600 hover:bg-green-500
+                           
+                            rounded `}
+                          // className={`block px-5 py-3 ml-3 text-xs font-medium text-white
+                          // ${
+                          //   initError
+                          //     ? "bg-red-400"
+                          //     : formik.isValid
+                          //     ? "bg-green-600 hover:bg-green-500"
+                          //     : "bg-red-400"
+                          // }
+                          //   rounded `}
+                        >
+                          Add to Cart
+                        </button>
                       </div>
+                      {formik.values.options.every(
+                        (option) => Object.values(option)[0] !== ""
+                      ) ? (
+                        <a className="">
+                          available {findMinQuantity(formik, product)}
+                        </a>
+                      ) : (
+                        <a className="text-red-500">must be select options</a>
+                      )}
                     </Form>
                   );
                 }}
               </Formik>
-              {/* <form className="mt-8">
-                {product.optionGroupList.length > 0 &&
-                  product.optionGroupList.map((optionGroup, index) => (
-                    <fieldset className={index !== 0 && "mt-4"}>
-                      <Disclosure defaultOpen>
-                        {({ open }) => (
-                          <>
-                            <Disclosure.Button className="flex justify-between w-full py-2 bg-gray-100">
-                              <legend className="text-sm font-medium">
-                                {optionGroup.name}
-                              </legend>
-                              <ChevronUpIcon
-                                className={`${
-                                  open ? "transform rotate-180" : ""
-                                } w-5 h-5 text-gray-500`}
-                              />
-                            </Disclosure.Button>
-                            <Disclosure.Panel className="px-1 pt-4 pb-2">
-                              {optionGroup.showImage ? (
-                                <RadioGroupImage
-                                  options={optionGroup.options}
-                                />
-                              ) : (
-                                <RadioGroupNoImage
-                                  name={optionGroup.name}
-                                  options={optionGroup.options}
-                                />
-                              )}
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
-                    </fieldset>
-                  ))}
-
-                <div className="flex mt-8">
-                  <div>
-                    <label for="quantity" className="sr-only">
-                      Qty
-                    </label>
-
-                    <input
-                      type="number"
-                      id="quantity"
-                      min="1"
-                      value="1"
-                      className="w-12 py-3 text-xs text-center border-gray-200 rounded [-moz-appearance:_textfield] [&::-webkit-outer-spin-button]:m-0 [&::-webkit-inner-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="block px-5 py-3 ml-3 text-xs font-medium text-white bg-green-600 rounded hover:bg-green-500"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </form> */}
             </div>
           </div>
         </div>
@@ -633,9 +640,6 @@ const productDetail2 = ({ product }) => {
           </div>
         </div>
       </section>
-      {/* <ProductImageSlider
-        images={product.productImage.map((item) => item.image.path)}
-      /> */}
     </>
   );
 };
@@ -643,13 +647,28 @@ export default productDetail2;
 
 export const getStaticProps = async ({ params }) => {
   const { id } = params;
-  const res = await fetch(`http://localhost:5000/api/v1/product/${id}`);
-  const response = await res.json();
-  return {
-    props: { product: response },
-    revalidate: 10,
-  };
+  console.log(params);
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery(["products", id], () => fetchProduct(id));
+  // const res = await fetch(`http://localhost:5000/api/v1/product/${id}`);
+  // const response = await res.json();
+  // return {
+  //   props: { product: response },
+  //   revalidate: 10,
+  // };
+  return { props: { dehydratedState: dehydrate(queryClient) } };
 };
+// export const getStaticProps = async ({ params }) => {
+//   const { id } = params;
+
+//   const res = await fetch(`http://localhost:5000/api/v1/product/${id}`);
+//   const response = await res.json();
+//   return {
+//     props: { product: response },
+//     revalidate: 10,
+//   };
+// };
 export const getStaticPaths = async () => {
   const url = `http://localhost:5000/api/v1/product?page=1&per_page=100`;
 

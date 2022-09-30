@@ -1,9 +1,10 @@
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
-import { Field } from "formik";
+import { Field, useFormikContext } from "formik";
 import React from "react";
 
 const RadioGroupOption = ({ name, optionGroup, ...otherProps }) => {
+  const { setFieldValue, values } = useFormikContext();
   return (
     <Disclosure defaultOpen>
       {({ open }) => (
@@ -22,14 +23,44 @@ const RadioGroupOption = ({ name, optionGroup, ...otherProps }) => {
                 return optionGroup.showImage ? (
                   <ul class="grid gap-6 w-full grid-cols-3 md:grid-cols-4 ">
                     {optionGroup.options.map((option, i) => (
-                      <li className="h-full">
+                      <li className="h-full relative">
+                        {/* {!optionGroup.manyRelate &&
+                          option.optionInventoryList[0].inventory.quantity <=
+                            0 && (
+                            <div className="absolute inset-0 z-50  transition-opacity border rounded-lg">
+                              <div className="flex h-full items-center ">
+                                <p className="py-4 text-lg bg-white bg-opacity-80 text-center w-full">
+                                  out of stock
+                                </p>
+                              </div>
+                            </div>
+                          )} */}
                         <input
                           type="radio"
                           id={option.id}
                           {...field}
+                          onChange={() => {
+                            // values.options
+                            //   .filter(
+                            //     (filterItem) =>
+                            //       optionGroup.id !==
+                            //       Number(Object.keys(filterItem)[0])
+                            //   )
+                            //   .every(
+                            //     (option) => Object.values(option)[0] !== ""
+                            //   );
+                            setFieldValue("quantity", 1);
+                            setFieldValue(name, option.id);
+                            console.log("test", values);
+                          }}
                           value={option.id}
                           checked={option.id === Number(field.value)}
                           className="hidden peer"
+                          // disabled={
+                          //   !optionGroup.manyRelate &&
+                          //   option.optionInventoryList[0].inventory.quantity <=
+                          //     0
+                          // }
                         ></input>
                         <label
                           htmlFor={option.id}
@@ -73,12 +104,22 @@ const RadioGroupOption = ({ name, optionGroup, ...otherProps }) => {
                             value={option.id}
                             checked={option.id === Number(field.value)}
                             className="sr-only peer"
+                            // disabled={
+                            //   !optionGroup.manyRelate &&
+                            //   option.optionInventoryList[0].inventory
+                            //     .quantity <= 0
+                            // }
                           />
 
                           <span
-                            className={`inline-block px-3 py-1 text-xs font-medium border rounded-full group peer-checked:border-blue-600 peer-checked:text-blue-600`}
+                            className={`relative inline-block px-3 py-1 text-xs font-medium border rounded-full group peer-checked:border-blue-600 peer-checked:text-blue-600`}
                           >
-                            {option.name}   (+ ${option.price})
+                            {!optionGroup.manyRelate &&
+                              option.optionInventoryList[0].inventory
+                                .quantity <= 0 && (
+                                <div className="absolute inset-0 z-50 bg-white bg-opacity-80 transition-opacity border rounded-full"></div>
+                              )}
+                            {option.name} (+ ${option.price})
                           </span>
                         </label>
                       ))}
