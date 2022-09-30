@@ -3,7 +3,54 @@ import { ChevronUpIcon } from "@heroicons/react/solid";
 import { Field, useFormikContext } from "formik";
 import React from "react";
 
-const RadioGroupOption = ({ name, optionGroup, ...otherProps }) => {
+const RadioGroupOption = ({
+  name,
+  optionGroup,
+  optionGroupManyRelateList,
+  ...otherProps
+}) => {
+  const manageDisable = (
+    optionGroupManyRelateList,
+    values,
+    optionMain,
+    checked
+  ) => {
+    return values.options.some((optionFormik) => {
+      const inventoryOutStockList = [];
+      const optionId = Number(Object.values(optionFormik)[0]);
+
+      // console.log(optionGroupManyRelateList, optionId);
+      const optionGroupFound = optionGroupManyRelateList.find(
+        (optionGroupManyRelate) => {
+          // console.log(optionGroupManyRelate)
+          return optionGroupManyRelate.options.find(
+            (opitonDb) => opitonDb.id === optionId
+          )
+            ? true
+            : false;
+        }
+      );
+      // console.log(optionGroupFound);
+
+      optionGroupFound?.options
+        .find((opitonDb) => opitonDb.id === optionId)
+        .optionInventoryList.forEach((optionInventory) => {
+          if (optionInventory.inventory.quantity <= 0) {
+            inventoryOutStockList.push(optionInventory.inventory);
+          }
+        });
+      // console.log(inventoryOutStockList);
+      // console.log(optionMain.optionInventoryList);
+      const result = optionMain.optionInventoryList.some((optionInventory) =>
+        inventoryOutStockList.find(
+          (inventory) => inventory.id === optionInventory.inventory.id
+        )
+          ? true
+          : false
+      );
+      return result && !checked;
+    });
+  };
   const { setFieldValue, values } = useFormikContext();
   return (
     <Disclosure defaultOpen>
@@ -40,18 +87,8 @@ const RadioGroupOption = ({ name, optionGroup, ...otherProps }) => {
                           id={option.id}
                           {...field}
                           onChange={() => {
-                            // values.options
-                            //   .filter(
-                            //     (filterItem) =>
-                            //       optionGroup.id !==
-                            //       Number(Object.keys(filterItem)[0])
-                            //   )
-                            //   .every(
-                            //     (option) => Object.values(option)[0] !== ""
-                            //   );
                             setFieldValue("quantity", 1);
                             setFieldValue(name, option.id);
-                            console.log("test", values);
                           }}
                           value={option.id}
                           checked={option.id === Number(field.value)}
@@ -102,23 +139,45 @@ const RadioGroupOption = ({ name, optionGroup, ...otherProps }) => {
                             id={option.id}
                             {...field}
                             value={option.id}
+                            onChange={() => {
+                              if (optionGroup.manyRelate) {
+                                option.optionInventoryList;
+                              }
+
+                              setFieldValue("quantity", 1);
+                              setFieldValue(name, option.id);
+                            }}
                             checked={option.id === Number(field.value)}
                             className="sr-only peer"
-                            // disabled={
-                            //   !optionGroup.manyRelate &&
-                            //   option.optionInventoryList[0].inventory
-                            //     .quantity <= 0
-                            // }
+                            disabled={
+                              (!optionGroup.manyRelate &&
+                                option.optionInventoryList[0].inventory
+                                  .quantity <= 0) ||
+                              (optionGroup.manyRelate &&
+                                option.optionInventoryList.every(
+                                  (item) => item.inventory.quantity <= 0
+                                ))
+                            }
                           />
 
                           <span
                             className={`relative inline-block px-3 py-1 text-xs font-medium border rounded-full group peer-checked:border-blue-600 peer-checked:text-blue-600`}
                           >
-                            {!optionGroup.manyRelate &&
+                            {(!optionGroup.manyRelate &&
                               option.optionInventoryList[0].inventory
-                                .quantity <= 0 && (
+                                .quantity <= 0) ||
+                              (optionGroup.manyRelate &&
+                                option.optionInventoryList.every(
+                                  (item) => item.inventory.quantity <= 0
+                                )) ||
+                              (manageDisable(
+                                optionGroupManyRelateList,
+                                values,
+                                option,
+                                option.id === Number(field.value)
+                              ) && (
                                 <div className="absolute inset-0 z-50 bg-white bg-opacity-80 transition-opacity border rounded-full"></div>
-                              )}
+                              ))}
                             {option.name} (+ ${option.price})
                           </span>
                         </label>

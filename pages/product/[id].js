@@ -53,6 +53,7 @@ const productDetail2 = () => {
       const optionGroup = product.optionGroupList.find(
         (optionGroup) => optionGroup.id === Number(Object.keys(option)[0])
       );
+
       const optionFound = optionGroup.options.find(
         (optionTmp) => optionTmp.id === Number(Object.values(option)[0])
       );
@@ -61,6 +62,84 @@ const productDetail2 = () => {
 
     inventoryQ.push(product.availableStock);
     return inventoryQ.reduce((acc, cur) => {
+      return acc < cur ? acc : cur;
+    });
+  };
+
+  const findMinQuantity2 = (formik, product) => {
+    // config backend filter forget return
+
+    let inventoryQ = formik.values.options
+      .filter((option) =>
+        product.optionGroupList
+          .filter((optionGroup) => !optionGroup.manyRelate)
+          .find(
+            (optionGroup) => optionGroup.id === Number(Object.keys(option)[0])
+          )
+          ? true
+          : false
+      )
+      .map((option) => {
+        const optionGroup = product.optionGroupList.find(
+          (optionGroup) => optionGroup.id === Number(Object.keys(option)[0])
+        );
+
+        const optionFound = optionGroup.options.find(
+          (optionTmp) => optionTmp.id === Number(Object.values(option)[0])
+        );
+        return optionFound.optionInventoryList[0].inventory.quantity;
+      });
+    console.log("inq", inventoryQ);
+
+    let duplicateElement = [];
+    const array2d = formik.values.options
+      .filter((option) =>
+        product.optionGroupList
+          .filter((optionGroup) => optionGroup.manyRelate)
+          .find(
+            (optionGroup) => optionGroup.id === Number(Object.keys(option)[0])
+          )
+          ? true
+          : false
+      )
+      .map((option) => {
+        const optionGroup = product.optionGroupList.find(
+          (optionGroup) => optionGroup.id === Number(Object.keys(option)[0])
+        );
+
+        const optionFound = optionGroup.options.find(
+          (optionTmp) => optionTmp.id === Number(Object.values(option)[0])
+        );
+        return optionFound.optionInventoryList;
+      });
+    console.log("array2d", array2d);
+    array2d.forEach((array) => {
+      duplicateElement = [...duplicateElement, ...array];
+    });
+    console.log("dup", duplicateElement);
+    duplicateElement = duplicateElement.filter((item, index) => {
+      return (
+        duplicateElement.findIndex(
+          (ele) => ele.inventory.id === item.inventory.id
+        ) !== index
+      );
+    });
+    console.log("dup step1", duplicateElement);
+    duplicateElement = duplicateElement.filter((item, index) => {
+      return (
+        duplicateElement.findIndex(
+          (ele) => ele.inventory.id === item.inventory.id
+        ) === index
+      );
+    });
+    console.log("dup step2",duplicateElement);
+    duplicateElement=duplicateElement.map((item) => item.inventory.quantity);
+
+    duplicateElement = [...duplicateElement, ...inventoryQ];
+    console.log("dup step3",duplicateElement);
+    duplicateElement.push(product.availableStock);
+    // console.log(duplicateElement);
+    return duplicateElement.reduce((acc, cur) => {
       return acc < cur ? acc : cur;
     });
   };
@@ -196,7 +275,7 @@ const productDetail2 = () => {
                 }}
               >
                 {(formik) => {
-                  console.log(formik.values);
+                  // console.log(formik.values);
                   return (
                     <Form className="mt-8" onSubmit={formik.handleSubmit}>
                       {product.optionGroupList.length > 0 &&
@@ -210,6 +289,11 @@ const productDetail2 = () => {
                                 control={"radioGroupOption"}
                                 name={`options.${index}.${optionGroup.id}`}
                                 optionGroup={optionGroup}
+                                optionGroupManyRelateList={product.optionGroupList.filter(
+                                  (optionGroupFilter) =>
+                                    optionGroupFilter.allowStatus &&
+                                    optionGroupFilter.manyRelate
+                                )}
                               />
                             </fieldset>
                           ))}
@@ -310,7 +394,7 @@ const productDetail2 = () => {
                         (option) => Object.values(option)[0] !== ""
                       ) ? (
                         <a className="">
-                          available {findMinQuantity(formik, product)}
+                          available {findMinQuantity2(formik, product)}
                         </a>
                       ) : (
                         <a className="text-red-500">must be select options</a>
