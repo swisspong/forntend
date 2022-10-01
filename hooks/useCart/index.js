@@ -20,7 +20,8 @@ async function fetchCartByCookieId() {
 export function useCart() {
   if (Cookies.get("cart_id")) {
     return useQuery(["cart"], () => fetchCartByCookieId(), {
-      staleTime: 60000,
+      // staleTime: 60000,
+      // retryOnMount:false
     });
   } else {
     return useQuery(["cart"], () => fetchCart(), {
@@ -73,6 +74,45 @@ export const useRemoveItemCartMutation = () => {
   return useMutation(
     (productId) =>
       API.delete(`/cart/${Cookies.get("cart_id")}/items/${productId}`),
+    {
+      // When mutate is called:
+      onMutate: async (cartItem) => {
+        // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+        await queryClient.cancelQueries(["cart"]);
+
+        // Snapshot the previous value
+        const previousTodos = queryClient.getQueryData(["cart"]);
+
+        // Optimistically update to the new value
+        // if (previousTodos) {
+        //   queryClient.setQueryData(['cart'], {
+        //     ...previousTodos,
+        //     items: [
+        //       ...previousTodos.items,
+        //       { id: Math.random().toString(), text: cartItem },
+        //     ],
+        //   })
+        // }
+
+        return { previousTodos };
+      },
+      // If the mutation fails, use the context returned from onMutate to roll back
+      onError: (err, variables, context) => {
+        if (context?.previousTodos) {
+          queryClient.setQueryData(["cart"], context.previousTodos);
+        }
+      },
+      // Always refetch after error or success:
+      onSettled: () => {
+        queryClient.invalidateQueries(["cart"]);
+      },
+    }
+  );
+};
+export const useEmptyCartMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation(
+    () => API.delete(`/cart/${Cookies.get("cart_id")}/items`),
     {
       // When mutate is called:
       onMutate: async (cartItem) => {

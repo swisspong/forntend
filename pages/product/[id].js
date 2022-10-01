@@ -132,11 +132,11 @@ const productDetail2 = () => {
         ) === index
       );
     });
-    console.log("dup step2",duplicateElement);
-    duplicateElement=duplicateElement.map((item) => item.inventory.quantity);
+    console.log("dup step2", duplicateElement);
+    duplicateElement = duplicateElement.map((item) => item.inventory.quantity);
 
     duplicateElement = [...duplicateElement, ...inventoryQ];
-    console.log("dup step3",duplicateElement);
+    console.log("dup step3", duplicateElement);
     duplicateElement.push(product.availableStock);
     // console.log(duplicateElement);
     return duplicateElement.reduce((acc, cur) => {
@@ -741,7 +741,7 @@ export const getStaticProps = async ({ params }) => {
   //   props: { product: response },
   //   revalidate: 10,
   // };
-  return { props: { dehydratedState: dehydrate(queryClient) } };
+  return { props: { dehydratedState: dehydrate(queryClient) }, revalidate: 10 };
 };
 // export const getStaticProps = async ({ params }) => {
 //   const { id } = params;

@@ -3,6 +3,7 @@ import { MinusIcon, PlusIcon, XIcon } from "@heroicons/react/outline";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import React, { useState } from "react";
+import DialogCartItem from "./DialogCartItem";
 import MyDialog from "./MyDialog";
 
 const CartItem = ({ cartItem, removeCartItem, updateCartItem }) => {
@@ -107,17 +108,18 @@ const CartItem = ({ cartItem, removeCartItem, updateCartItem }) => {
           </div>
           <div className="hidden md:block text-sm">
             <div>
-              <button
+              {/* <button
                 onClick={() => setIsOpen(true)}
                 class="bg-amber-100 text-amber-700 px-3 py-1.5 rounded text-xs font-medium block"
               >
                 Edit
-              </button>
-              <MyDialog isOpen={isOpen} setIsOpen={setIsOpen} />
+              </button> */}
+              {/* <MyDialog isOpen={isOpen} setIsOpen={setIsOpen} /> */}
+              <DialogCartItem cartItem={cartItem} productId={cartItem.productId}/>
               {/* <MyDisclosure/> */}
             </div>
             ${Number(cartItem.price).toFixed(2)}
-            <small class="text-gray-500"> x{quantity}</small>
+            <small class="text-gray-500"> x{cartItem.quantity}</small>
             <br />= ${Number(cartItem.subTotal).toFixed(2)}
           </div>
         </div>
@@ -135,7 +137,7 @@ const CartItem = ({ cartItem, removeCartItem, updateCartItem }) => {
               className="ml-2 w-20"
               type="number"
               disabled
-              value={quantity}
+              value={cartItem.quantity}
             />
             <button
               onClick={() => {
