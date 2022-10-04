@@ -115,10 +115,20 @@ const CartItem = ({ cartItem, removeCartItem, updateCartItem }) => {
                 Edit
               </button> */}
               {/* <MyDialog isOpen={isOpen} setIsOpen={setIsOpen} /> */}
-              <DialogCartItem cartItem={cartItem} productId={cartItem.productId}/>
+              <DialogCartItem
+                cartItem={cartItem}
+                productId={cartItem.productId}
+              />
               {/* <MyDisclosure/> */}
             </div>
-            ${Number(cartItem.price).toFixed(2)}
+            $
+            {(
+              Number(cartItem.price) +
+              cartItem.cartItemDetail.reduce((acc, curr) => {
+                return acc + Number(curr.price);
+              }, 0)
+            ).toFixed(2)}
+            {}
             <small class="text-gray-500"> x{cartItem.quantity}</small>
             <br />= ${Number(cartItem.subTotal).toFixed(2)}
           </div>
@@ -161,15 +171,14 @@ const CartItem = ({ cartItem, removeCartItem, updateCartItem }) => {
               className="flex border-accent-2 border p-1"
               onClick={() => {
                 setQuantity((prevState) => {
-                  if(prevState>1){
-
+                  if (prevState > 1) {
                     updateCartItem({
                       id: cartItem.productId,
                       quantity: prevState - 1,
                     });
                     return prevState - 1;
-                  }else{
-                    return prevState
+                  } else {
+                    return prevState;
                   }
                 });
               }}

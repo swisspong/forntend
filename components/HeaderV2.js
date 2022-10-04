@@ -4,16 +4,19 @@ import {
   ShoppingBagIcon,
   UserIcon,
 } from "@heroicons/react/outline";
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
 
 import LoginPopup from "./auth/LoginPop";
+import OptionUser from "./auth/OptoinUser";
 import Cart from "./cart/Cart";
 import CartHeader from "./CartHeader";
 // import { useState } from "react";
 
 const HeaderV2 = ({ cart }) => {
+  const queryClient = useQueryClient();
   const [openPopup, setOpenPopup] = useState(false);
   const openPopupHanelder = () => {
     setOpenPopup(true);
@@ -54,11 +57,15 @@ const HeaderV2 = ({ cart }) => {
                 </span>
               </a>
             </Link>
-
-            <UserIcon
-              className="h-6 w-6 cursor-pointer transition duration-100 transform hover:scale-125 hover:text-gray-900"
-              onClick={() => openPopupHanelder()}
-            />
+            {queryClient.getQueryData(["auth"]) ? (
+              // <div>{queryClient.getQueryData(["auth"]).user?.username}</div>
+              <OptionUser/>
+            ) : (
+              <UserIcon
+                className="h-6 w-6 cursor-pointer transition duration-100 transform hover:scale-125 hover:text-gray-900"
+                onClick={() => openPopupHanelder()}
+              />
+            )}
             {/* <MenuAlt3Icon className="cursor-pointer h-6 w-6 md:hidden block" /> */}
           </div>
         </div>

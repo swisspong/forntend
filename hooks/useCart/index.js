@@ -19,6 +19,7 @@ async function fetchCartByCookieId() {
 
 export function useCart() {
   if (Cookies.get("cart_id")) {
+    console.log(Cookies.get("rjid"))
     return useQuery(["cart"], () => fetchCartByCookieId(), {
       // staleTime: 60000,
       // retryOnMount:false

@@ -7,6 +7,7 @@ import {
   XIcon,
 } from "@heroicons/react/outline";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 import CartItem from "../../components/cart/CartItem";
 import DialogCartError from "../../components/cart/DialogCartError";
@@ -17,10 +18,10 @@ import {
 } from "../../hooks/useCart";
 
 const CartPage = () => {
-  const { isLoading, data } = useCart();
+  const { isLoading, data, isFetching, refetch } = useCart();
   const { mutate: removeCartItem } = useRemoveItemCartMutation();
   const { mutate: updateCartItem } = useUpdateItemCartMutation();
-
+  const router = useRouter();
   if (isLoading) {
     return <div>Loading....</div>;
   }
@@ -85,11 +86,23 @@ const CartPage = () => {
               </div>
             </div>
             <div className="flex flex-row justify-end">
-              <Link href={"/checkout"}>
-                <a className="w-full lg:w-72 justify-center inline-flex py-2 px-4 bg-gray-200 cursor-pointer">
-                  Proceed to Checkout
-                </a>
-              </Link>
+              {/* <Link href={"/checkout"}> */}
+              <button
+                onClick={() => {
+                  refetch();
+                  if (
+                    !isFetching &&
+                    !isLoading &&
+                    !data.cartItemList.some((item) => item?.error && item.error)
+                  ) {
+                    router.push("/checkout");
+                  }
+                }}
+                className="w-full lg:w-72 justify-center inline-flex py-2 px-4 bg-gray-200 "
+              >
+                Proceed to Checkout
+              </button>
+              {/* </Link> */}
             </div>
           </div>
         </div>

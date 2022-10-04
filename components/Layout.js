@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useEffect } from "react";
+import { useRefresh } from "../hooks/useAuth";
 import HeaderV2 from "./HeaderV2";
 import MyFooter from "./MyFooter";
 const API = axios.create({
@@ -24,7 +26,12 @@ function useCart() {
   }
 }
 const Layout = ({ children }) => {
+  //const {data:auth} = useRefresh()
   const { data } = useCart();
+  // useEffect(()=>{
+  //   console.log("etst layout")
+  //   console.log(auth)
+  // },[auth])
   return (
     <>
       <HeaderV2 cart={data} />
