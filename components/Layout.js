@@ -26,12 +26,9 @@ function useCart() {
   }
 }
 const Layout = ({ children }) => {
-  //const {data:auth} = useRefresh()
+  const {data:auth} = useRefresh()
   const { data } = useCart();
-  // useEffect(()=>{
-  //   console.log("etst layout")
-  //   console.log(auth)
-  // },[auth])
+
   return (
     <>
       <HeaderV2 cart={data} />

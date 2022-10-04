@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { API, refreshReq } from "../../lib/axiosPrivate";
 
-
 async function fetchRefresh() {
   const res = await API.get(`/auth/refresh`);
   return res.data;
@@ -15,6 +14,8 @@ export function useRefresh() {
       console.log(data.result);
       queryClient.setQueryData(["auth"], data.result);
     },
+    retry: false,
+    staleTime: 60000,
   });
 }
 export function usePrivate() {
@@ -50,8 +51,6 @@ export function usePrivate() {
       return Promise.reject(err);
     }
   );
-
-  
 }
 export const useSignupMutation = () => {
   const queryClient = useQueryClient();
