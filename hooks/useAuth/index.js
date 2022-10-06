@@ -1,4 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { store } from "../../app/store";
+import { login } from "../../features/auth/authSlice";
 
 import { API, refreshReq } from "../../lib/axiosPrivate";
 
@@ -8,14 +11,15 @@ async function fetchRefresh() {
 }
 
 export function useRefresh() {
+  const dispatch = useDispatch();
   const queryClient = useQueryClient();
   return useQuery(["auth"], () => fetchRefresh(), {
     onSuccess: (data) => {
-      console.log(data.result);
+      dispatch(login(data.result));
       queryClient.setQueryData(["auth"], data.result);
     },
     retry: false,
-    staleTime: 60000,
+    //staleTime: 60000,
   });
 }
 export function usePrivate() {

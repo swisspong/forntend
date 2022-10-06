@@ -13,22 +13,18 @@ const AddressPopup = ({ closePopupHandler }) => {
       <div className="flex justify-center items-center h-screen fixed inset-0  z-50 overflow-hidden">
         <div className="inline-block  w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl">
           <div className="w-full flex justify-between">
-          <p class="text-lg font-medium">Create new address</p>
+            <p class="text-lg font-medium">Create new address</p>
             <XIcon
               className="h-6 w-6 cursor-pointer transition duration-100 transform hover:scale-125 text-gray-700 hover:text-gray-900"
               onClick={() => closePopupHandler()}
             />
           </div>
-         
-          {/* <h3 className="text-3xl font-bold text-center">Logo</h3>
-          <h3 className="text-2xl mt-2 font-bold text-center">
-            Login to your account
-          </h3> */}
+
           <Formik
             initialValues={{
-              recipientName:"",
-              address:"",
-              phone:""
+              recipientName: "",
+              address: "",
+              phone: "",
             }}
             enableReinitialize
             //onSubmit={signinSubmitHandler}
@@ -44,15 +40,6 @@ const AddressPopup = ({ closePopupHandler }) => {
                         name="recipientName"
                         placeholder={"Recipient name"}
                       />
-
-                      {/* <label className="block" htmlFor="email">
-                          Email
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Email"
-                          className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                        /> */}
                     </div>
                     <div className="mt-1">
                       <FormikControl
@@ -62,14 +49,6 @@ const AddressPopup = ({ closePopupHandler }) => {
                         name="address"
                         placeholder={"Address"}
                       />
-                      {/* <label className="block" htmlFor="Password">
-                          Password
-                        </label>
-                        <input
-                          type="password"
-                          placeholder="Password"
-                          className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                        /> */}
                     </div>
                     <div className="mt-1">
                       <FormikControl
@@ -78,14 +57,6 @@ const AddressPopup = ({ closePopupHandler }) => {
                         name="phone"
                         placeholder={"Phone"}
                       />
-                      {/* <label className="block" htmlFor="Password">
-                          Password
-                        </label>
-                        <input
-                          type="password"
-                          placeholder="Password"
-                          className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                        /> */}
                     </div>
                     <div className="flex flex-col space-y-2 items-center justify-between">
                       <button
@@ -94,15 +65,6 @@ const AddressPopup = ({ closePopupHandler }) => {
                       >
                         Submit
                       </button>
-                      {/* <a href="#" className="text-sm text-blue-600 hover:underline">
-                  Forgot password?
-                </a> */}
-                      {/* <p
-                        className="cursor-pointer text-sm text-blue-600 hover:underline"
-                        onClick={goToSignUpHandler}
-                      >
-                        Don't have an account? Sign Up
-                      </p> */}
                     </div>
                   </div>
                 </Form>

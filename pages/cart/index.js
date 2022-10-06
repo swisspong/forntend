@@ -19,6 +19,7 @@ import {
 
 const CartPage = () => {
   const { isLoading, data, isFetching, refetch } = useCart();
+  
   const { mutate: removeCartItem } = useRemoveItemCartMutation();
   const { mutate: updateCartItem } = useUpdateItemCartMutation();
   const router = useRouter();
@@ -93,7 +94,10 @@ const CartPage = () => {
                   if (
                     !isFetching &&
                     !isLoading &&
-                    !data.cartItemList.some((item) => item?.error && item.error)
+                    !data.cartItemList.some(
+                      (item) => item?.error && item.error
+                    ) &&
+                    data.cartItemList.length > 0
                   ) {
                     router.push("/checkout");
                   }

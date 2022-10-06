@@ -6,9 +6,10 @@ import React, { useEffect, useState } from "react";
 import AddressPopup from "../../components/account/AddresPopup";
 import FormikControl from "../../components/Form/FormikController";
 import { useRefresh } from "../../hooks/useAuth";
+import { useAddressQuery } from "../../hooks/useUser";
 
 const AccountPage = () => {
-  //const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   const {
     data: auth,
     isSuccess,
@@ -16,6 +17,11 @@ const AccountPage = () => {
     isLoading,
     isFetching,
   } = useRefresh();
+
+  const { data: addressList, isLoading: isLoadingAddress ,isFetching:isFetchingAddressList} = useAddressQuery(
+    queryClient.getQueryData(["auth"])
+  );
+  console.log(addressList);
   const router = useRouter();
   const [openPopup, setOpenPopup] = useState(false);
   const openPopupHanelder = () => {
@@ -25,7 +31,7 @@ const AccountPage = () => {
     setOpenPopup(false);
   };
   useEffect(() => {
-    console.log(auth);
+    // console.log(auth);
     //console.log(queryClient.getQueryData(["auth"]));
   }, [auth]);
   useEffect(() => {
@@ -247,55 +253,62 @@ const AccountPage = () => {
           }}
         </Formik>
       </article> */}
-      <article class=" rounded-xl border shadow-sm shadow-indigo-100 p-4">
-        <ul class="mt-4 space-y-2">
-          <li>
-            <div className="mt-16 flex justify-center">
-              <span className="w-16 h-16 border-dashed border-2 border-gray-900 rounded-full flex justify-center items-center">
-                <TruckIcon className="w-9 h-9" />
-              </span>
-            </div>
-            <h2 className="pt-6 text-2xl font-bold tracking-wide text-center">
-              Your address is empty
-            </h2>
-          </li>
-          <li>
-            <div class="flex items-center  space-x-5  h-full rounded-lg border border-gray-700 p-4 hover:border-pink-600">
-              <div className="grow">
-                <h5 class="font-medium ">Swiss Sutthijakra</h5>
+      {!isLoadingAddress  && (
+        <article class=" rounded-xl border shadow-sm shadow-indigo-100 p-4">
+          <ul class="mt-4 space-y-2">
+            {addressList.length <= 0 ? (
+              <li>
+                <div className="mt-16 flex justify-center">
+                  <span className="w-16 h-16 border-dashed border-2 border-gray-900 rounded-full flex justify-center items-center">
+                    <TruckIcon className="w-9 h-9" />
+                  </span>
+                </div>
+                <h2 className="pt-6 text-2xl font-bold tracking-wide text-center">
+                  Your address is empty
+                </h2>
+              </li>
+            ) : (
+              <li>
+                <div class="flex items-center  space-x-5  h-full rounded-lg border border-gray-700 p-4 hover:border-pink-600">
+                  <div className="grow">
+                    <h5 class="font-medium ">Swiss Sutthijakra</h5>
 
-                <p class="mt-1 text-xs  text-gray-500">
-                  428/1-2 ม.1 ตำบลหนองแสง อำเภอวาปีปทุม จังหวัดหมาสารคาม
-                </p>
+                    <p class="mt-1 text-xs  text-gray-500">
+                      428/1-2 ม.1 ตำบลหนองแสง อำเภอวาปีปทุม จังหวัดหมาสารคาม
+                    </p>
 
-                <h5 class="mt-1 text-gray-500">087-424-6651</h5>
-              </div>
-              <button
-                type="button"
-                className=" px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
-              >
-                Delete
-              </button>
-              <button
-                type="button"
-                className=" px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
-              >
-                Edit
-              </button>
-            </div>
-          </li>
-        </ul>
-        <div className="flex justify-end">
-          <button
-            type="button"
-            className=" mt-3 px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
-            onClick={openPopupHanelder}
-          >
-            Add new address
-          </button>
-          {openPopup && <AddressPopup closePopupHandler={closePopupHandler} />}
-        </div>
-      </article>
+                    <h5 class="mt-1 text-gray-500">087-424-6651</h5>
+                  </div>
+                  <button
+                    type="button"
+                    className=" px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    className=" px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
+                  >
+                    Edit
+                  </button>
+                </div>
+              </li>
+            )}
+          </ul>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              className=" mt-3 px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
+              onClick={openPopupHanelder}
+            >
+              Add new address
+            </button>
+            {openPopup && (
+              <AddressPopup closePopupHandler={closePopupHandler} />
+            )}
+          </div>
+        </article>
+      )}
     </div>
   );
 };
