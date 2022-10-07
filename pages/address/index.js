@@ -23,7 +23,7 @@ const AddressPage = () => {
   console.log(data);
   return (
     <div className="max-w-screen-lg px-4 py-8 mx-auto min-h-[calc(100vh-4rem)]">
-      {/* // <h2 class="text-lg font-medium mb-1"> Address </h2> */}
+   
       <h1 className="text-2xl font-bold lg:text-3xl">Address</h1>
       {data.length <= 0 ? (
         <>
@@ -46,37 +46,13 @@ const AddressPage = () => {
           </div>
         </>
       ) : (
-        // data.map((item) => (
+      
         <article class="  p-4">
           <ul class="mt-4 space-y-2">
             {data.map((item) => (
               <li>
-                {/* <div class="flex items-center  space-x-5  h-full rounded-lg border border-gray-700 p-4 hover:border-pink-600">
-                  <div className="grow">
-                    <h5 class="font-medium ">{item.recipientName}</h5>
-
-                    <p class="mt-1 text-xs  text-gray-500">
-                      {item.address}
-                    
-                    </p>
-
-                    <h5 class="mt-1 text-gray-500">087-424-6651</h5>
-                  </div>
-                  <button
-                    type="button"
-                    className=" px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
-                  >
-                    Delete
-                  </button>
-                  <button
-                    type="button"
-                    className=" px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
-                    onClick={openPopupHanelder}
-                  >
-                    Edit
-                  </button>
-                </div> */}
-                <AddressCard item={item}/>
+          
+                <AddressCard isDelete={true} isUpdate={true} item={item}/>
               </li>
             ))}
           </ul>
@@ -90,7 +66,7 @@ const AddressPage = () => {
             </button>
           </div>
         </article>
-        // ))
+        
       )}
 
       {openPopup && <AddressPopup closePopupHandler={closePopupHandler} />}

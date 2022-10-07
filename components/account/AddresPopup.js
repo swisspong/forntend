@@ -10,7 +10,11 @@ import {
 
 import FormikControl from "../Form/FormikController";
 
-const AddressPopup = ({ closePopupHandler, info = null }) => {
+const AddressPopup = ({
+  closePopupHandler,
+  info = null,
+  setEditIdHandler = null,
+}) => {
   const { mutate: addAddress, isSuccess } = useAddAddressMutation();
   const { mutate: editaddress, isSuccess: isSuccessEdit } =
     useEditAddressMutation();
@@ -45,7 +49,12 @@ const AddressPopup = ({ closePopupHandler, info = null }) => {
             </p>
             <XIcon
               className="h-6 w-6 cursor-pointer transition duration-100 transform hover:scale-125 text-gray-700 hover:text-gray-900"
-              onClick={() => closePopupHandler()}
+              onClick={() => {
+                if (setEditIdHandler) {
+                  setEditIdHandler(null);
+                }
+                closePopupHandler();
+              }}
             />
           </div>
 
