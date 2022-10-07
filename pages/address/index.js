@@ -2,11 +2,15 @@ import { ArrowLeftIcon, TruckIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import React, { useState } from "react";
 import AddressPopup from "../../components/account/AddresPopup";
+import AddressCard from "../../components/account/AddressCard";
 import { useAddressQuery } from "../../hooks/useUser";
 
 const AddressPage = () => {
+
   const { data, isLoading, isFetching } = useAddressQuery();
   const [openPopup, setOpenPopup] = useState(false);
+
+
   const openPopupHanelder = () => {
     setOpenPopup(true);
   };
@@ -16,6 +20,7 @@ const AddressPage = () => {
   if (isLoading) {
     return <div>Loading....</div>;
   }
+  console.log(data);
   return (
     <div className="max-w-screen-lg px-4 py-8 mx-auto min-h-[calc(100vh-4rem)]">
       {/* // <h2 class="text-lg font-medium mb-1"> Address </h2> */}
@@ -41,33 +46,39 @@ const AddressPage = () => {
           </div>
         </>
       ) : (
+        // data.map((item) => (
         <article class="  p-4">
           <ul class="mt-4 space-y-2">
-            <li>
-              <div class="flex items-center  space-x-5  h-full rounded-lg border border-gray-700 p-4 hover:border-pink-600">
-                <div className="grow">
-                  <h5 class="font-medium ">Swiss Sutthijakra</h5>
+            {data.map((item) => (
+              <li>
+                {/* <div class="flex items-center  space-x-5  h-full rounded-lg border border-gray-700 p-4 hover:border-pink-600">
+                  <div className="grow">
+                    <h5 class="font-medium ">{item.recipientName}</h5>
 
-                  <p class="mt-1 text-xs  text-gray-500">
-                    428/1-2 ม.1 ตำบลหนองแสง อำเภอวาปีปทุม จังหวัดหมาสารคาม
-                  </p>
+                    <p class="mt-1 text-xs  text-gray-500">
+                      {item.address}
+                    
+                    </p>
 
-                  <h5 class="mt-1 text-gray-500">087-424-6651</h5>
-                </div>
-                <button
-                  type="button"
-                  className=" px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
-                >
-                  Delete
-                </button>
-                <button
-                  type="button"
-                  className=" px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
-                >
-                  Edit
-                </button>
-              </div>
-            </li>
+                    <h5 class="mt-1 text-gray-500">087-424-6651</h5>
+                  </div>
+                  <button
+                    type="button"
+                    className=" px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    className=" px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
+                    onClick={openPopupHanelder}
+                  >
+                    Edit
+                  </button>
+                </div> */}
+                <AddressCard item={item}/>
+              </li>
+            ))}
           </ul>
           <div className="flex justify-end">
             <button
@@ -79,6 +90,7 @@ const AddressPage = () => {
             </button>
           </div>
         </article>
+        // ))
       )}
 
       {openPopup && <AddressPopup closePopupHandler={closePopupHandler} />}

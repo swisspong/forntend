@@ -3,10 +3,14 @@ import { useDispatch } from "react-redux";
 import { store } from "../../app/store";
 import { login } from "../../features/auth/authSlice";
 
-import { API, refreshReq } from "../../lib/axiosPrivate";
+import { API, logoutReq, refreshReq } from "../../lib/axiosPrivate";
 
 async function fetchRefresh() {
   const res = await API.get(`/auth/refresh`);
+  return res.data;
+}
+async function fetchLogout() {
+  const res = await logoutReq();
   return res.data;
 }
 
@@ -18,10 +22,15 @@ export function useRefresh() {
       dispatch(login(data.result));
       queryClient.setQueryData(["auth"], data.result);
     },
+    onError: () => {
+      queryClient.setQueryData(["auth"], null);
+    },
+
     retry: false,
     //staleTime: 60000,
   });
 }
+
 export function usePrivate() {
   const queryClient = useQueryClient();
   const auth = queryClient.getQueryData(["auth"]);
@@ -95,6 +104,45 @@ export const useSignupMutation = () => {
 export const useSigninMutation = () => {
   const queryClient = useQueryClient();
   return useMutation((body) => API.post(`/auth/signin`, body), {
+    // When mutate is called:
+    onSuccess: (data) => {
+      queryClient.setQueryData(["auth"], data.data.result);
+    },
+    onMutate: async (credential) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries(["auth"]);
+
+      // Snapshot the previous value
+      const previousTodos = queryClient.getQueryData(["auth"]);
+
+      // Optimistically update to the new value
+      // if (previousTodos) {
+      //   queryClient.setQueryData(['auth'], {
+      //     ...previousTodos,
+      //     items: [
+      //       ...previousTodos.items,
+      //       { id: Math.random().toString(), text: cartItem },
+      //     ],
+      //   })
+      // }
+
+      return { previousTodos };
+    },
+    // If the mutation fails, use the context returned from onMutate to roll back
+    onError: (err, variables, context) => {
+      if (context?.previousTodos) {
+        queryClient.setQueryData(["auth"], context.previousTodos);
+      }
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries(["auth"]);
+    },
+  });
+};
+export const useSignoutMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation(() => fetchLogout(), {
     // When mutate is called:
     onSuccess: (data) => {
       queryClient.setQueryData(["auth"], data.data.result);

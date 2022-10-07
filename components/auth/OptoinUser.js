@@ -3,9 +3,11 @@ import { Fragment } from "react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSignoutMutation } from "../../hooks/useAuth";
 
 export default function OptionUser() {
-  const router = useRouter()
+  const { mutate } = useSignoutMutation();
+  const router = useRouter();
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -31,8 +33,8 @@ export default function OptionUser() {
             <Menu.Item>
               {({ active }) => (
                 <button
-                  onClick={()=>{
-                    router.push('/account')
+                  onClick={() => {
+                    router.push("/account");
                   }}
                   className={`${
                     active ? "bg-violet-500 text-white" : "text-gray-900"
@@ -59,6 +61,9 @@ export default function OptionUser() {
                   className={`${
                     active ? "bg-violet-500 text-white" : "text-gray-900"
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  onClick={() => {
+                    router.push("/address");
+                  }}
                 >
                   {active ? (
                     <DuplicateActiveIcon
@@ -129,6 +134,9 @@ export default function OptionUser() {
                   className={`${
                     active ? "bg-violet-500 text-white" : "text-gray-900"
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                  onClick={() => {
+                    mutate()
+                  }}
                 >
                   {active ? (
                     <DeleteActiveIcon
