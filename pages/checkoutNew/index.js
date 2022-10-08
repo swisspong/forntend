@@ -6,7 +6,10 @@ import FormikControl from "../../components/Form/FormikController";
 
 import { useCart } from "../../hooks/useCart";
 import Script from "react-load-script";
-import { useAddOrderMutation } from "../../hooks/usePayment";
+import {
+  useAddOrderCODAuthMutation,
+  useAddOrderMutation,
+} from "../../hooks/usePayment";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +24,7 @@ const CheckoutPage = () => {
   const { data: address, isLoadingAddresss, isFetching } = useAddressQuery();
   const credential = useSelector(selectCredential);
   const { mutate } = useAddOrderMutation();
+  const { mutate: codAuth } = useAddOrderCODAuthMutation();
   const { isLoading, data } = useCart();
   const dispatch = useDispatch();
   const [openPopup, setOpenPopup] = useState(false);
@@ -52,10 +56,12 @@ const CheckoutPage = () => {
   const validationSchema = Yup.object({
     firstName: Yup.string().required().min(2),
   });
-
+  const clickCODAuthHandler = () => {
+    codAuth({ addressId: selectAddresId });
+  };
   const onSubmitNotAuth = (values) => {
     console.log("formik values", values);
-    console.log("amount",data.totalPrice)
+    console.log("amount", data.totalPrice);
     mutate({ ...values, amount: data.totalPrice });
   };
   return (
@@ -221,7 +227,8 @@ const CheckoutPage = () => {
 
                   <button
                     className="mt-6 rounded-lg bg-black text-sm p-2.5 text-white w-full block"
-                    type="submit"
+                    type="button"
+                    onClick={clickCODAuthHandler}
                   >
                     Cash On Delivery
                   </button>
