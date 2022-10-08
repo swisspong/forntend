@@ -9,18 +9,22 @@ import Script from "react-load-script";
 import { useAddOrderMutation } from "../../hooks/usePayment";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/solid";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectCredential } from "../../features/auth/authSlice";
 import { TruckIcon } from "@heroicons/react/outline";
 import { useAddressQuery } from "../../hooks/useUser";
 import AddressCard from "../../components/account/AddressCard";
 import AddressListPopup from "../../components/checkout/AddressListPopup";
+import { openAuthPopup } from "../../features/auth/authPopupSlice";
+import AddressPopup from "../../components/account/AddresPopup";
 const CheckoutPage = () => {
   const { data: address, isLoadingAddresss, isFetching } = useAddressQuery();
   const credential = useSelector(selectCredential);
   const { mutate } = useAddOrderMutation();
   const { isLoading, data } = useCart();
+  const dispatch = useDispatch();
   const [openPopup, setOpenPopup] = useState(false);
+  const [openPopupCreate, setOpenPopupCreate] = useState(false);
   const [selectAddresId, setSelectAdressId] = useState(null);
   useEffect(() => {
     if (address?.length > 0) {
@@ -33,6 +37,15 @@ const CheckoutPage = () => {
   const closePopupHandler = () => {
     setOpenPopup(false);
   };
+  const openPopupCreateHanelder = () => {
+    setOpenPopupCreate(true);
+  };
+  const closePopupCreateHandler = () => {
+    setOpenPopupCreate(false);
+  };
+  const selectAdressIdHandler = (id) => {
+    setSelectAdressId(id);
+  };
   if (isLoading || isLoadingAddresss || isFetching) {
     return <div>Loading....</div>;
   }
@@ -40,10 +53,10 @@ const CheckoutPage = () => {
     firstName: Yup.string().required().min(2),
   });
 
-
-  const onSubmit = (values) => {
+  const onSubmitNotAuth = (values) => {
     console.log("formik values", values);
-    // mutate(values.firstname, values.lastName, values.email, values.address);
+    console.log("amount",data.totalPrice)
+    mutate({ ...values, amount: data.totalPrice });
   };
   return (
     <section className="">
@@ -166,20 +179,27 @@ const CheckoutPage = () => {
                         <button
                           type="button"
                           className=" mt-3 px-3 py-1 text-white bg-blue-600 rounded-lg hover:bg-blue-900"
-                          // onClick={openPopupHanelder}
+                          onClick={openPopupCreateHanelder}
                         >
                           Create new address
                         </button>
                       </div>
+                      {openPopupCreate && (
+                        <AddressPopup
+                          closePopupHandler={closePopupCreateHandler}
+                        />
+                      )}
                     </>
                   ) : (
                     <article class=" ">
                       <ul class="mt-4 space-y-2">
-                        {address.filter(item=> item.id === selectAddresId).map((item) => (
-                          <li>
-                            <AddressCard item={item} />
-                          </li>
-                        ))}
+                        {address
+                          .filter((item) => item.id === selectAddresId)
+                          .map((item) => (
+                            <li>
+                              <AddressCard item={item} />
+                            </li>
+                          ))}
                       </ul>
                       <div className="flex justify-end">
                         <button
@@ -192,6 +212,7 @@ const CheckoutPage = () => {
                       </div>
                       {openPopup && (
                         <AddressListPopup
+                          selectAdressIdHandler={selectAdressIdHandler}
                           closePopupHandler={closePopupHandler}
                         />
                       )}
@@ -204,6 +225,12 @@ const CheckoutPage = () => {
                   >
                     Cash On Delivery
                   </button>
+                  <button
+                    className="mt-3 rounded-lg bg-black text-sm p-2.5 text-white w-full block"
+                    type="submit"
+                  >
+                    Attach Slip
+                  </button>
                 </>
               ) : (
                 <Formik
@@ -215,7 +242,7 @@ const CheckoutPage = () => {
                     address: "",
                   }}
                   validationSchema={validationSchema}
-                  onSubmit={onSubmit}
+                  onSubmit={onSubmitNotAuth}
                 >
                   {(formik) => {
                     console.log(formik.errors);
@@ -263,13 +290,27 @@ const CheckoutPage = () => {
 
                         <div className="col-span-6">
                           <button
-                            id="checkout-button-credit-card"
-                            // onClick={clickHandler}
+                            onClick={() => {}}
                             className="rounded-lg bg-black text-sm p-2.5 text-white w-full block"
                             type="submit"
                           >
                             Cash On Delivery
                           </button>
+                          <button
+                            className="mt-3 rounded-lg bg-gray-600 cursor-not-allowed text-sm p-2.5 text-white w-full block"
+                            disabled
+                            type="button"
+                          >
+                            Attach Slip
+                          </button>
+                          <p
+                            className="cursor-pointer text-sm  hover:underline"
+                            onClick={() => {
+                              dispatch(openAuthPopup());
+                            }}
+                          >
+                            You must be login to use this method
+                          </p>
                         </div>
                       </Form>
                     );

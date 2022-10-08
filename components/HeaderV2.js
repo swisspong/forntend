@@ -8,6 +8,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  closeAuthPopup,
+  openAuthPopup,
+  selectAuthPopup,
+} from "../features/auth/authPopupSlice";
 
 import LoginPopup from "./auth/LoginPop";
 import OptionUser from "./auth/OptoinUser";
@@ -17,17 +23,19 @@ import CartHeader from "./CartHeader";
 
 const HeaderV2 = ({ cart }) => {
   const queryClient = useQueryClient();
-  const [openPopup, setOpenPopup] = useState(false);
+
+  const authPopup = useSelector(selectAuthPopup);
+  const dispatch = useDispatch();
   const openPopupHanelder = () => {
-    setOpenPopup(true);
+    dispatch(openAuthPopup());
   };
   const closePopupHandler = () => {
-    setOpenPopup(false);
+    dispatch(closeAuthPopup());
   };
 
   return (
     <>
-      {openPopup && <LoginPopup closePopupHandler={closePopupHandler} />}
+      {authPopup && <LoginPopup closePopupHandler={closePopupHandler} />}
       {/* <Cart/> */}
       <nav className="w-full bg-slate-50/90 backdrop-blur-sm  text-gray-700 py-4 md:py-0 sticky top-0 z-40">
         <div className="flex flex-wrap items-center  px-4 mx-auto h-16 justify-between sm:px-6  lg:max-w-full lg:px-8 ">
@@ -59,7 +67,7 @@ const HeaderV2 = ({ cart }) => {
             </Link>
             {queryClient.getQueryData(["auth"]) ? (
               // <div>{queryClient.getQueryData(["auth"]).user?.username}</div>
-              <OptionUser/>
+              <OptionUser />
             ) : (
               <UserIcon
                 className="h-6 w-6 cursor-pointer transition duration-100 transform hover:scale-125 hover:text-gray-900"

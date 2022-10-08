@@ -6,9 +6,9 @@ import AddressPopup from "../account/AddresPopup";
 import AddressCard from "../account/AddressCard";
 import FormikControl from "../Form/FormikController";
 
-const AddressListPopup = ({ closePopupHandler }) => {
+const AddressListPopup = ({ closePopupHandler, selectAdressIdHandler }) => {
   const [openPopup, setOpenPopup] = useState(false);
-  
+
   const [editId, setEditId] = useState(null);
 
   const openPopupHanelder = () => {
@@ -59,7 +59,9 @@ const AddressListPopup = ({ closePopupHandler }) => {
                           isDelete={true}
                           isUpdate={true}
                           item={item}
+                          selectAdressIdHandler={selectAdressIdHandler}
                           setEditIdHandler={setEditIdHandler}
+                          closeParentPopupHandler={ closePopupHandler}
                         />
                       </li>
                     ))}

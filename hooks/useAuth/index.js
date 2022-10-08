@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDispatch } from "react-redux";
 import { store } from "../../app/store";
-import { login } from "../../features/auth/authSlice";
+import { login, logout } from "../../features/auth/authSlice";
 
 import { API, logoutReq, refreshReq } from "../../lib/axiosPrivate";
 
@@ -142,10 +142,12 @@ export const useSigninMutation = () => {
 };
 export const useSignoutMutation = () => {
   const queryClient = useQueryClient();
+  const dispatch = useDispatch()
   return useMutation(() => fetchLogout(), {
     // When mutate is called:
     onSuccess: (data) => {
       queryClient.setQueryData(["auth"], data.data.result);
+      
     },
     onMutate: async (credential) => {
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
@@ -175,6 +177,7 @@ export const useSignoutMutation = () => {
     },
     // Always refetch after error or success:
     onSettled: () => {
+      dispatch(logout())
       queryClient.invalidateQueries(["auth"]);
     },
   });

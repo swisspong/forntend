@@ -7,6 +7,8 @@ const AddressCard = ({
   isDelete = false,
   isUpdate = false,
   setEditIdHandler = null,
+  selectAdressIdHandler = null,
+  closeParentPopupHandler = null,
 }) => {
   const { mutate: deleteAddress, isSuccess } = useDeleteAddressMutation();
   const [openPopup, setOpenPopup] = useState(false);
@@ -19,7 +21,19 @@ const AddressCard = ({
   };
   return (
     <>
-      <div class="flex items-center  space-x-5  h-full rounded-lg border border-gray-700 p-4 hover:border-pink-600">
+      <div
+        class={`${
+          selectAdressIdHandler && "cursor-pointer"
+        } flex items-center  space-x-5  h-full rounded-lg border border-gray-700 p-4 hover:border-pink-600`}
+        onClick={() => {
+          if (selectAdressIdHandler) {
+            selectAdressIdHandler(item.id);
+            if (closeParentPopupHandler) {
+              closeParentPopupHandler();
+            }
+          }
+        }}
+      >
         <div className="grow">
           <h5 class="font-medium ">{item.recipientName}</h5>
 
