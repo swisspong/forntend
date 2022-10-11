@@ -57,12 +57,17 @@ const CheckoutPage = () => {
     firstName: Yup.string().required().min(2),
   });
   const clickCODAuthHandler = () => {
-    codAuth({ addressId: selectAddresId });
+    console.log("cod auth",selectAddresId)
+    codAuth({ addressId: selectAddresId,paymentMethod:"COD", amount: data.totalPrice });
+  };
+  const clickSlipAuthHandler = () => {
+    console.log("cod auth",selectAddresId)
+    codAuth({ addressId: selectAddresId,paymentMethod:"SLIP", amount: data.totalPrice });
   };
   const onSubmitNotAuth = (values) => {
     console.log("formik values", values);
     console.log("amount", data.totalPrice);
-    mutate({ ...values, amount: data.totalPrice });
+    mutate({ ...values, amount: data.totalPrice});
   };
   return (
     <section className="">
@@ -235,6 +240,7 @@ const CheckoutPage = () => {
                   <button
                     className="mt-3 rounded-lg bg-black text-sm p-2.5 text-white w-full block"
                     type="submit"
+                    onClick={clickSlipAuthHandler}
                   >
                     Attach Slip
                   </button>
