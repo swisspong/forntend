@@ -42,33 +42,30 @@ const Order = () => {
 
       <Stepper />
 
-      <div className="mt-10 flex flex-col xl:flex-row jusitfy-center items-stretch  w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
+      <div className="mt-10 flex flex-row jusitfy-center items-stretch  w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
         <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
           <div className="flex flex-col justify-start items-start bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
             <p className="text-lg md:text-xl font-semibold leading-6 xl:leading-5 text-gray-800">
               Customer’s Cart
             </p>
             {data.orderItem.map((item) => (
-              <div className="mt-4 md:mt-6 flex  flex-col md:flex-row justify-start items-start md:items-start md:space-x-6 xl:space-x-8 w-full ">
-                <div className="pb-4 md:pb-0 w-full md:w-40">
-                  <img
-                    className="w-full hidden md:block"
-                    src="https://i.ibb.co/84qQR4p/Rectangle-10.png"
-                    alt="dress"
-                  />
-                  <img
-                    className="w-full md:hidden"
-                    src="https://i.ibb.co/L039qbN/Rectangle-10.png"
-                    alt="dress"
-                  />
+              <div className="mt-6 flex flex-row justify-start items-start space-x-6 w-full h-full">
+                <div className="pb-0  h-full w-40">
+                  <div className="aspect-w-1 aspect-h-1">
+                    <img
+                      className="object-cover"
+                      src="https://images.pexels.com/photos/9420589/pexels-photo-9420589.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+                      alt="dress"
+                    />
+                  </div>
                 </div>
-                <div className="border-b border-gray-200 md:flex-row flex-col flex justify-between items-start w-full h-full  space-y-4 md:space-y-0">
-                  <div className="w-full  flex flex-col justify-start items-start space-y-8">
-                    <h3 className="text-xl xl:text-2xl font-semibold leading-6 text-gray-800">
+                <div className=" flex border-b border-gray-200 justify-between items-start w-full  pb-0   space-y-0 h-full">
+                  <div className="w-full  h-full flex flex-col justify-start items-start space-y-8">
+                    <h3 className="text-2xl font-semibold leading-6 text-gray-800">
                       Premium Quaility Dress
                     </h3>
-                    <div className="flex justify-start items-start flex-col space-y-2">
-                      {/* <p className="text-sm leading-none text-gray-800">
+                    {/* <div className="flex justify-start items-start flex-col space-y-2">
+                      <p className="text-sm leading-none text-gray-800">
                         <span className="text-gray-300">Style: </span> Italic
                         Minimal Design
                       </p>
@@ -78,25 +75,24 @@ const Order = () => {
                       <p className="text-sm leading-none text-gray-800">
                         <span className="text-gray-300">Color: </span> Light
                         Blue
-                      </p> */}
-                    </div>
+                      </p>
+                    </div> */}
                   </div>
-                  <div className="flex justify-between space-x-8 items-start w-full">
-                    <p className="text-base xl:text-lg leading-6">
+                  <div className="flex justify-between space-x-8 items-start h-full w-full">
+                    <p className="text-lg leading-6">
                       $36.00{" "}
                       <span className="text-red-300 line-through"> $45.00</span>
                     </p>
-                    <p className="text-base xl:text-lg leading-6 text-gray-800">
+                    <p className="text-lg leading-6 text-gray-800">
                       01
                     </p>
-                    <p className="text-base xl:text-lg font-semibold leading-6 text-gray-800">
+                    <p className="text-lg font-semibold leading-6 text-gray-800">
                       $36.00
                     </p>
                   </div>
                 </div>
               </div>
             ))}
-         
           </div>
           <div className="flex justify-center md:flex-row flex-col items-stretch w-full space-y-4 md:space-y-0 md:space-x-6 xl:space-x-8">
             <div className="flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6   ">
@@ -161,7 +157,7 @@ const Order = () => {
             </div>
           </div>
         </div>
-        <div className="bg-gray-50 w-full xl:w-96 flex justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col ">
+        {/* <div className="bg-gray-50 w-full xl:w-96 flex justify-between items-center md:items-start px-4 py-6 md:p-6 xl:p-8 flex-col ">
           <h3 className="text-xl font-semibold leading-5 text-gray-800">
             Customer
           </h3>
@@ -169,10 +165,7 @@ const Order = () => {
           <div className="flex  flex-col md:flex-row xl:flex-col justify-start items-stretch h-full w-full md:space-x-6 lg:space-x-8 xl:space-x-0 ">
             <div className="flex flex-col justify-start items-start flex-shrink-0">
               <div className="flex justify-center  w-full  md:justify-start items-center space-x-4 py-8 border-b border-gray-200">
-                {/* <img
-                  src="https://i.ibb.co/5TSg7f6/Rectangle-18.png"
-                  alt="avatar"
-                /> */}
+             
                 <UserIcon className="w-12" />
                 <div className=" flex justify-start items-start flex-col space-y-2">
                   <p className="text-base font-semibold leading-4 text-left text-gray-800">
@@ -249,7 +242,7 @@ const Order = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
