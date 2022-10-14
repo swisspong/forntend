@@ -54,7 +54,9 @@ const Order = () => {
                   <div className="aspect-w-1 aspect-h-1">
                     <img
                       className="object-cover"
-                      src="https://images.pexels.com/photos/9420589/pexels-photo-9420589.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+                      // src="https://images.pexels.com/photos/9420589/pexels-photo-9420589.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+              
+                      src={item.url}
                       alt="dress"
                     />
                   </div>
@@ -62,7 +64,7 @@ const Order = () => {
                 <div className=" flex border-b border-gray-200 justify-between items-start w-full  pb-0   space-y-0 h-full">
                   <div className="w-full  h-full flex flex-col justify-start items-start space-y-8">
                     <h3 className="text-2xl font-semibold leading-6 text-gray-800">
-                      Premium Quaility Dress
+                      {item.name}
                     </h3>
                     {/* <div className="flex justify-start items-start flex-col space-y-2">
                       <p className="text-sm leading-none text-gray-800">
@@ -80,14 +82,14 @@ const Order = () => {
                   </div>
                   <div className="flex justify-between space-x-8 items-start h-full w-full">
                     <p className="text-lg leading-6">
-                      $36.00{" "}
-                      <span className="text-red-300 line-through"> $45.00</span>
+                      {Number(item.price).toFixed(2)}
+                      {/* <span className="text-red-300 line-through"> $45.00</span> */}
                     </p>
                     <p className="text-lg leading-6 text-gray-800">
-                      01
+                      {item.quantity}
                     </p>
                     <p className="text-lg font-semibold leading-6 text-gray-800">
-                      $36.00
+                      {Number(item.subTotalPrice).toFixed(2)}
                     </p>
                   </div>
                 </div>
