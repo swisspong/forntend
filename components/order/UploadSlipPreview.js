@@ -1,6 +1,12 @@
 import React, { useState } from "react";
+import {
+  useAddSlipMutation,
+  useEditOrderSlipMutation,
+} from "../../hooks/useOrder";
 
-const UploadSlipPreview = () => {
+const UploadSlipPreview = ({ orderId }) => {
+  const { data, mutate, isLoading, isSuccess } = useAddSlipMutation();
+  const { mutate: updateOrderSlip } = useEditOrderSlipMutation();
   const [selectedFile, setSelectedFile] = useState();
   const [checkFile, setCheckFile] = useState(false);
 
@@ -8,10 +14,26 @@ const UploadSlipPreview = () => {
     setSelectedFile(e.target.files[0]);
     setCheckFile(true);
   };
+  const imageHandler2 = (e) => {
+    var formData = new FormData();
+    formData.append("asset", e.target.files[0]);
+    setSelectedFile(e.target.files[0]);
+    setCheckFile(true);
+    mutate(formData);
+  };
+  const submitHandler = () => {};
 
   const imagesubmission = () => {
-    if (checkFile) {
-      alert("File Uploaded");
+    if (checkFile && isSuccess) {
+      console.log(data.data.result.id);
+      const body = {
+        id: orderId,
+        values: { assetId: data.data.result.id },
+      };
+      // alert("File Uploaded");
+      console.log(body)
+      updateOrderSlip(body);
+
       console.log(selectedFile);
     } else {
       alert("select a file");
@@ -24,7 +46,7 @@ const UploadSlipPreview = () => {
         <input
           type="file"
           name="file"
-          onChange={imageHandler}
+          onChange={imageHandler2}
           className="z-20 opacity-0 cursor-pointer h-full w-full"
         />
         <div className="absolute flex justify-center items-center gap-2">
@@ -40,6 +62,7 @@ const UploadSlipPreview = () => {
         </div>
       </div>
       <button
+        disabled={isLoading}
         onClick={imagesubmission}
         className="hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 py-5  md:w-full bg-gray-800 text-base font-medium leading-4 text-white"
       >

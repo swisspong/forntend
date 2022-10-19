@@ -23,7 +23,7 @@ const ProfilePage = () => {
     return <div>Loading...</div>;
   }
   return (
-    <section className="">
+    <section className="max-w-screen-xl mx-auto">
       <h1 className="sr-only">Profile Page</h1>
       <div className="relative mx-auto max-w-screen-2xl">
         <div className="grid grid-cols-1 grid-rows-2 md:grid-rows-1 md:grid-cols-5 min-h-[calc(100vh-4rem)]">

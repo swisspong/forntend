@@ -155,7 +155,7 @@ const Order = () => {
                 </div>
               </div>
 
-              <UploadSlipPreview />
+              <UploadSlipPreview orderId={orderId}/>
             </div>
           </div>
         </div>

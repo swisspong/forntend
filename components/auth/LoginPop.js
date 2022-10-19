@@ -1,15 +1,22 @@
 import { XIcon } from "@heroicons/react/outline";
 import { Form, Formik } from "formik";
 import { useState } from "react";
+import GoogleButton from "react-google-button";
 import { useSigninMutation, useSignupMutation } from "../../hooks/useAuth";
 import FormikControl from "../Form/FormikController";
 
 const LoginPopup = ({ closePopupHandler }) => {
-  
   const { mutateAsync: signupMutate, isSuccess } = useSignupMutation();
   const { mutateAsync: signinMutate } = useSigninMutation();
   const [isLogin, setLogin] = useState(true);
   const [data, setData] = useState({ email: "", password: "" });
+  const google = () => {
+    window.open("http://localhost:5000/api/v1/auth/google", "_self");
+  };
+  const facebook = () => {
+    window.open("http://localhost:5000/api/v1/auth/facebook", "_self");
+  };
+
   const goToLoginHandler = () => {
     setLogin(true);
     setData({ email: "", password: "" });
@@ -104,6 +111,31 @@ const LoginPopup = ({ closePopupHandler }) => {
                         >
                           Login
                         </button>
+                        {/* <GoogleButton
+                          onClick={() => {
+                            console.log("Google button clicked");
+                          }}
+                        /> */}
+                        <div
+                          className="cursor-pointer bg-red-600 flex px-1 py-2 text-white font-bold items-center w-full rounded-lg justify-center"
+                          onClick={google}
+                        >
+                          <img
+                            src="/google.png"
+                            className="w-[20px] h-[20px] mr-[10px] "
+                          />
+                          Login with Google
+                        </div>
+                        <div
+                          className="cursor-pointer bg-blue-600 flex px-1 py-2 text-white font-bold items-center w-full rounded-lg justify-center"
+                          onClick={facebook}
+                        >
+                          <img
+                            src="/facebook.png"
+                            className="w-[20px] h-[20px] mr-[10px] "
+                          />
+                          Login with Facebook
+                        </div>
                         {/* <a href="#" className="text-sm text-blue-600 hover:underline">
                   Forgot password?
                 </a> */}

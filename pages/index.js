@@ -165,6 +165,7 @@ export const getStaticProps = async () => {
   const res = await fetch(
     "http://localhost:5000/api/v1/product?page=1&per_page=10"
   );
+
   const response = await res.json();
 
   return {

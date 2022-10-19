@@ -4,15 +4,23 @@ import { ChevronUpIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSignoutMutation } from "../../hooks/useAuth";
+import { selectCredential } from "../../features/auth/authSlice";
+import { useSelector } from "react-redux";
 
 export default function OptionUser() {
   const { mutate } = useSignoutMutation();
   const router = useRouter();
+  const data = useSelector(selectCredential);
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-          Options
+        <Menu.Button className="inline-flex w-full items-center justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+          <img
+            class="w-6 h-6 rounded-full mr-2"
+            src={data?.user?.imageUrl}
+            alt="Rounded avatar"
+          />
+          {data?.user?.username}
           <ChevronUpIcon
             className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
             aria-hidden="true"
@@ -135,7 +143,7 @@ export default function OptionUser() {
                     active ? "bg-violet-500 text-white" : "text-gray-900"
                   } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                   onClick={() => {
-                    mutate()
+                    mutate();
                   }}
                 >
                   {active ? (

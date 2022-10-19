@@ -39,23 +39,22 @@ const AccountPage = () => {
         <div class="flex items-center">
           <img
             alt="Developer"
-            src="https://images.unsplash.com/photo-1614644147724-2d4785d69962?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=928&q=80"
+            src={auth.user.imageUrl}
             class="h-16 w-16 rounded-full object-cover"
           />
 
           <div class="ml-3">
-            <h5 class="text-lg font-medium ">Claire Mac</h5>
+            <h5 class="text-lg font-medium ">{auth.user.username}</h5>
 
             <div class="flow-root">
               <ul class="-m-1 flex flex-wrap">
                 <li class="p-1 leading-none">
-                  <a href="#" class="text-xs font-medium text-gray-500">
-                    {" "}
-                    Twitter{" "}
-                  </a>
+                  <div class="text-xs font-medium text-gray-500">
+                    {auth.user.facebookId && "Facebook"}
+                  </div>
                 </li>
 
-                <li class="p-1 leading-none">
+                {/* <li class="p-1 leading-none">
                   <a href="#" class="text-xs font-medium text-gray-500">
                     {" "}
                     GitHub{" "}
@@ -66,7 +65,7 @@ const AccountPage = () => {
                   <a href="#" class="text-xs font-medium text-gray-500">
                     Website
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>
