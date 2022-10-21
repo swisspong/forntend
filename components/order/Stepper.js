@@ -1,11 +1,19 @@
 import React from "react";
 
-const Stepper = () => {
+const Stepper = ({ status }) => {
   return (
     <div className="mx-4 p-4">
       <div className="flex items-center">
-        <div className="flex items-center text-teal-600 relative">
-          <div className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-teal-600">
+        <div
+          className={`flex items-center ${
+            status === "PENDING" ? "text-white" : "text-teal-600"
+          }   relative`}
+        >
+          <div
+            className={`rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 ${
+              status === "PENDING" && "bg-teal-600"
+            }  border-2 border-teal-600`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="100%"
@@ -25,9 +33,30 @@ const Stepper = () => {
             Attach Slip
           </div>
         </div>
-        <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-teal-600"></div>
-        <div className="flex items-center text-white relative">
-          <div className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 bg-teal-600 border-teal-600">
+        <div
+          className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
+            status === "PENDING" ? "border-gray-300" : "border-teal-600"
+          }`}
+        ></div>
+        <div
+          className={`flex items-center ${
+            status === "AUTHORIZE"
+              ? "text-white"
+              : status === "PENDING"
+              ? "text-gray-500"
+              : "text-teal-600"
+          }   relative`}
+        >
+          <div
+            // className={
+            //   "rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 bg-teal-600 border-teal-600"
+            // }
+            className={`rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 ${
+              status === "AUTHORIZE" && "bg-teal-600"
+            }  border-2 ${
+              status === "PENDING" ? "border-gray-300" : "border-teal-600"
+            } `}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="100%"
@@ -46,8 +75,12 @@ const Stepper = () => {
               <line x1="23" y1="11" x2="17" y2="11"></line>
             </svg>
           </div>
-          <div className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-teal-600">
-            Packed
+          <div
+            className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
+              status === "PENDING" ? "text-gray-500" : "text-teal-600"
+            } `}
+          >
+            Authorize
           </div>
         </div>
         <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>

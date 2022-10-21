@@ -36,20 +36,30 @@ export const useAddSlipMutation = () => {
 };
 
 export const useEditOrderSlipMutation = () => {
-    const queryClient = useQueryClient();
-    return useMutation((body) => editOrderSlipReq(body.id, body.values), {
-      onMutate: async (newUserBio) => {
-        await queryClient.cancelQueries(["order"]);
-        const previousTodos = queryClient.getQueryData(["order"]);
-        return { previousTodos };
-      },
-      onError: (err, variables, context) => {
-        if (context?.previousTodos) {
-          queryClient.setQueryData(["order"], context.previousTodos);
-        }
-      },
-      onSettled: () => {
-        queryClient.invalidateQueries(["order"]);
-      },
-    });
-  };
+  const queryClient = useQueryClient();
+  return useMutation((body) => editOrderSlipReq(body.id, body.values), {
+    onMutate: async (newUserBio) => {
+      console.log("slip mutate", newUserBio);
+      await queryClient.cancelQueries(["order", newUserBio.id]);
+      const previousTodos = queryClient.getQueryData(["order", newUserBio.id]);
+      return { previousTodos, newUserBio };
+    },
+    onError: (err, newUserBio, context) => {
+      if (context?.previousTodos) {
+        queryClient.setQueryData(
+          ["order", context.newUserBio.id],
+          context.previousTodos
+        );
+      }
+    },
+
+    onSettled: (newUserBio) => {
+      console.log("onsettle", newUserBio);
+      console.log("test", newUserBio.data.result.orderId.toString());
+      queryClient.invalidateQueries([
+        "order",
+        newUserBio.data.result.orderId.toString(),
+      ]);
+    },
+  });
+};
