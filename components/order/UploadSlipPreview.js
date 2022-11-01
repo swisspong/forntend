@@ -11,7 +11,6 @@ const UploadSlipPreview = ({ orderId }) => {
   const [selectedFile, setSelectedFile] = useState();
   const [checkFile, setCheckFile] = useState(false);
 
-
   const imageHandler2 = (e) => {
     var formData = new FormData();
     formData.append("asset", e.target.files[0]);
@@ -19,7 +18,6 @@ const UploadSlipPreview = ({ orderId }) => {
     setCheckFile(true);
     mutate(formData);
   };
-
 
   const imagesubmission = () => {
     if (checkFile && isSuccess) {
@@ -40,7 +38,7 @@ const UploadSlipPreview = ({ orderId }) => {
 
   return (
     <>
-      <div className="p-2 border-dashed border-2 border-indigo-600 grid gap-2 justify-items-center md:grid-cols-2 lg:grid-cols-4">
+      {/* <div className="p-2 border-dashed border-2 border-indigo-600 grid gap-2 justify-items-center md:grid-cols-2 lg:grid-cols-4">
         <div className=" w-full h-full border border-indigo-600 relative">
           <div className="absolute top-1 right-1 p-1 bg-white rounded-full border border-red-600">
             <TrashIcon width={20} height={20} className=" text-red-600" />
@@ -50,10 +48,14 @@ const UploadSlipPreview = ({ orderId }) => {
             src={selectedFile ? URL.createObjectURL(selectedFile) : null}
           />
         </div>
-
-      
-      </div>
-      <div className="flex justify-center">
+      </div> */}
+      <div className="flex justify-center items-center space-x-2">
+        <div className="border-dashed rounded border-2 border-gray-500 h-44 w-32">
+          <img
+            className={`rounded h-full mx-auto object-contain`}
+            src={selectedFile ? URL.createObjectURL(selectedFile) : null}
+          />
+        </div>
         <label class="block">
           <span class="sr-only">Choose profile photo</span>
           <input

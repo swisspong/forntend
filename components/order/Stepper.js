@@ -40,7 +40,7 @@ const Stepper = ({ status }) => {
         ></div>
         <div
           className={`flex items-center ${
-            status === "AUTHORIZE"
+            status === "AUTHORIZE" || status === "PAID"
               ? "text-white"
               : status === "PENDING"
               ? "text-gray-500"
@@ -52,7 +52,7 @@ const Stepper = ({ status }) => {
             //   "rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 bg-teal-600 border-teal-600"
             // }
             className={`rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 ${
-              status === "AUTHORIZE" && "bg-teal-600"
+              (status === "AUTHORIZE" || status === "PAID") && "bg-teal-600"
             }  border-2 ${
               status === "PENDING" ? "border-gray-300" : "border-teal-600"
             } `}
@@ -80,13 +80,39 @@ const Stepper = ({ status }) => {
               status === "PENDING" ? "text-gray-500" : "text-teal-600"
             } `}
           >
-            Authorize
+            {status === "PAID" ? "Paid" : "Authorize"}
           </div>
         </div>
-        <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
 
-        <div className="flex items-center text-gray-500 relative">
-          <div className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gray-300">
+        <div
+          // className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"
+          className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
+            status === "PACKING" || status === "DELIVERED"
+              ? "border-teal-600"
+              : "border-gray-300"
+          }`}
+        ></div>
+
+        <div
+          //  className="flex items-center text-gray-500 relative"
+          className={`flex items-center ${
+            status === "AUTHORIZE" || status == "PENDING" || status === "PAID"
+              ? "text-gray-500"
+              : status === "PACKING"
+              ? "text-white"
+              : "text-teal-600"
+          }   relative`}
+        >
+          <div
+            //  className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gray-300"
+            className={`rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 ${
+              status === "PACKING" && "bg-teal-600"
+            }  border-2 ${
+              status === "PACKING" || status === "DELIVERED"
+                ? "border-teal-600"
+                : "border-gray-300"
+            } `}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="100%"
@@ -103,13 +129,37 @@ const Stepper = ({ status }) => {
               <polyline points="22,6 12,13 2,6"></polyline>
             </svg>
           </div>
-          <div className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-gray-500">
-            Shipped
+          <div
+            // className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-gray-500"
+            className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
+              status === "PENDING" || status === "AUTHORIZE"||status==="PAID"
+                ? "text-gray-500"
+                : "text-teal-600"
+            } `}
+          >
+            Packing
           </div>
         </div>
-        <div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
-        <div className="flex items-center text-gray-500 relative">
-          <div className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gray-300">
+        <div
+          // className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"
+          className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
+            status === "DELIVERED" ? "border-teal-600" : "border-gray-300"
+          }`}
+        ></div>
+        <div
+          //className="flex items-center text-gray-500 relative"
+          className={`flex items-center ${
+            status === "DELIVERED" ? "text-white" : "text-gray-500"
+          }   relative`}
+        >
+          <div
+            // className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-gray-300"
+            className={`rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 ${
+              status === "DELIVERED" && "bg-teal-600"
+            }  border-2 ${
+              status === "DELIVERED" ? "border-teal-600" : "border-gray-300"
+            } `}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="100%"
@@ -127,7 +177,14 @@ const Stepper = ({ status }) => {
               <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
             </svg>
           </div>
-          <div className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-gray-500">
+          <div 
+          //className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase text-gray-500"
+          className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
+            status === "DELIVERED" 
+              ? "text-teal-600"
+              : "text-gray-500"
+          } `}
+          >
             Delivered
           </div>
         </div>
