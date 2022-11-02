@@ -5,7 +5,7 @@ import {
   useEditOrderSlipMutation,
 } from "../../hooks/useOrder";
 
-const UploadSlipPreview = ({ orderId }) => {
+const UploadSlipPreview = ({ orderId, url = null, disabled }) => {
   const { data, mutate, isLoading, isSuccess } = useAddSlipMutation();
   const { mutate: updateOrderSlip } = useEditOrderSlipMutation();
   const [selectedFile, setSelectedFile] = useState();
@@ -53,12 +53,19 @@ const UploadSlipPreview = ({ orderId }) => {
         <div className="border-dashed rounded border-2 border-gray-500 h-44 w-32">
           <img
             className={`rounded h-full mx-auto object-contain`}
-            src={selectedFile ? URL.createObjectURL(selectedFile) : null}
+            src={
+              selectedFile
+                ? URL.createObjectURL(selectedFile)
+                : url
+                ? url
+                : null
+            }
           />
         </div>
         <label class="block">
           <span class="sr-only">Choose profile photo</span>
           <input
+            disabled={disabled}
             type="file"
             onChange={imageHandler2}
             class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4
@@ -102,7 +109,7 @@ const UploadSlipPreview = ({ orderId }) => {
           </div>
         </div> */}
         <button
-          disabled={isLoading}
+          disabled={isLoading || disabled}
           onClick={imagesubmission}
           className="hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 py-5  md:w-full bg-gray-800 text-base font-medium leading-4 text-white"
         >

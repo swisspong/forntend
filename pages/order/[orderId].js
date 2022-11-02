@@ -40,7 +40,7 @@ const Order = () => {
         </p>
       </div>
 
-      <Stepper status={data.status}/>
+      <Stepper status={data.status} />
 
       <div className="mt-10 flex flex-row jusitfy-center items-stretch  w-full xl:space-x-8 space-y-4 md:space-y-6 xl:space-y-0">
         <div className="flex flex-col justify-start items-start w-full space-y-4 md:space-y-6 xl:space-y-8">
@@ -55,7 +55,7 @@ const Order = () => {
                     <img
                       className="object-cover"
                       // src="https://images.pexels.com/photos/9420589/pexels-photo-9420589.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
-              
+
                       src={item.url}
                       alt="dress"
                     />
@@ -155,7 +155,11 @@ const Order = () => {
                 </div>
               </div>
 
-              <UploadSlipPreview orderId={orderId}/>
+              <UploadSlipPreview
+                orderId={orderId}
+                url={data?.slip[0]?.image?.path || null}
+                disabled={data.status!=="INVALID_SLIP" && data.status !== "PENDING"}
+              />
             </div>
           </div>
         </div>
