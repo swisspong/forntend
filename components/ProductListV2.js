@@ -21,7 +21,7 @@ const ProductListV2 = ({ products }) => {
             href={product.id}
             // imageAlt={product.imageAlt}
             // imageSrc={product.imageSrc}
-            category={product.category.name}
+            category={product.category?.name}
             imageSrc={product.productImage[0].image.path}
             name={product.name}
             price={product.price}
